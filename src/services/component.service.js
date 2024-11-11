@@ -188,9 +188,53 @@ const updateComponent = async (id, column, value) => {
 
 };
 
+/**
+ * Deletes a component from the system
+ * @param {number} id - The id of the component to delete
+ */
+const deleteComponent = async id => {
+
+    try{
+
+        /* Validate the passed in arguments */
+        validator(id).isDefined().isNumber();
+
+        /* Prepare the sql statement and it's supporting values */
+        const sqlStmt = "DELETE FROm components WHERE id = $1";
+        const sqlValues = [id];
+
+        /* Execute the sql statement and check the returned data */
+        const result = await db.query(sqlStmt, sqlValues);
+
+        if(!result){
+            return {
+                "state": "fail",
+                "message": "Unable to remove component",
+                "data": []
+            }
+        } else {
+            return {
+                "state": "ok",
+                "message": "Component successfully removed",
+                "data": result?.rows
+            }
+        }
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        }
+    }
+
+};
+
 module.exports = {
     findComponents,
     findComponent,
     createComponent,
-    updateComponent
+    updateComponent,
+    deleteComponent
 }
