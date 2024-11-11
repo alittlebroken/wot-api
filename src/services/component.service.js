@@ -140,8 +140,57 @@ const createComponent = async () => {
 
 };
 
+/**
+ * Updates a component
+ * @param {number} id - The Id of the component being updated
+ * @param {String} columm - The DB column to be updated in the table
+ * @param {any} value - The new value being updated to
+  */
+const updateComponent = async (id, column, value) => {
+
+    try{
+
+        /* Validate passed in arguments */
+        validator(id).isDefined().isNumber();
+        validator(column).isDefined().isString().minLen(2);
+
+        /* Prepare the statement and it's supporting values */
+        const sqlStmt = `
+            UPDATE components SET ${column} = $2 WHERE id = $1 RETURNING *;
+        `;
+        const sqlValues = [id, value];
+
+        /* Execute ther statement against the DB */
+        const result = await db.query(sqlStmt, sqlValues);
+
+        if(!result){
+            return {
+                "state": "fail",
+                "message": "Unable to update component",
+                "data": []
+            }
+        } else {
+            return {
+                "state": "ok",
+                "message": "Component successfully updated",
+                "data": result?.rows
+            }
+        }
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        };
+    }
+
+};
+
 module.exports = {
     findComponents,
     findComponent,
-    createComponent
+    createComponent,
+    updateComponent
 }
