@@ -40,6 +40,52 @@ const findComponents = async () => {
 
 };
 
+/**
+ * Find an individual component
+ * 
+ * @param {number} id - The ide of the component to find
+ */
+const findComponent = async id => {
+
+    try{
+
+        /* Validate the passed in argument */
+        validator(id).isDefined().isNumber();
+
+        /* Create the SQL statements and supporting values to enable us to
+        find the required component */
+        const sqlStmt = "SELECT id, name, description, owner, created_at, edited_at FROM components WHERE id = $1";
+        const sqlValues = [parseInt(id)];
+
+        /* Execute the query and store the results back for checking */
+        const results = await db.query(sqlStmt, sqlValues);
+
+        if(!results || results?.rows?.length <= 0){
+            return {
+                "state": "fail",
+                "message": "Unable to get find specified component",
+                "data": []
+            }
+        } else {
+            return {
+                "state": "ok",
+                "message": "Component successfully found",
+                "data": results?.rows
+            }
+        }
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        };
+    }
+
+};
+
 module.exports = {
-    findComponents
+    findComponents,
+    findComponent
 }
