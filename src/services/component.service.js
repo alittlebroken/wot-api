@@ -54,7 +54,7 @@ const findComponent = async id => {
 
         /* Create the SQL statements and supporting values to enable us to
         find the required component */
-        const sqlStmt = "SELECT id, name, description, owner, created_at, edited_at FROM components WHERE id = $1";
+        const sqlStmt = "SELECT id, name, description, owner, device_id, created_at, edited_at FROM components WHERE id = $1";
         const sqlValues = [parseInt(id)];
 
         /* Execute the query and store the results back for checking */
@@ -85,7 +85,63 @@ const findComponent = async id => {
 
 };
 
+/**
+ * Creates a new component
+ * @param {String} name - The components name
+ * @param {String} description - The description of the component ( can be blank )
+ * @param {number} owner - The owner of the component
+ * @param {number} device_id - The device this component is associated with
+ */
+const createComponent = async () => {
+
+    try{
+
+        /* Validate the passed in arguments */
+        validator(name).isDefined().isString().minLen(1);
+        validator(owner).isDefined().isNumber();
+        validator(device_id).isDefined().isNumber();
+
+        /* Prepare the SQL and it's values for insertion */
+        const sqlStmt = `
+            INSERT INTO components(
+             name, description, owner, device_id
+            ) VALUES (
+             $1, $2, $3, $4 
+            );
+        `;
+        const sqlValues = [name, description, owner, device_id];
+
+        /* Execute the SQL statement and check the returned data */
+        const result = await db.query(sqlStmt, sqlValues);
+
+        if(!result){
+            return {
+                "state": "fail",
+                "message": "Unable to add component",
+                "data": []
+            }
+        } else {
+            return {
+                "state": "ok",
+                "message": "Component successfully added",
+                "data": result?.rows
+            }
+        }
+
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        }
+    }
+
+};
+
 module.exports = {
     findComponents,
-    findComponent
+    findComponent,
+    createComponent
 }
