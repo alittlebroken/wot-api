@@ -71,11 +71,11 @@ const getComponent = async (req, res) => {
         const result = await service.findComponent(id);
 
         /* Check the result is ok */
-        if(!result || result?.data?.length <= 0){
+        if(!result){
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
-                "message": "Unable to retrieve list of components",
+                "message": "Unable to retrieve components",
                 "data": []
             });
         } else {
