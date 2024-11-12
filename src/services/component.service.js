@@ -107,13 +107,13 @@ const createComponent = async (name, description, owner, device_id) => {
              name, description, owner, device_id
             ) VALUES (
              $1, $2, $3, $4 
-            );
+            ) RETURNING id, name, description, owner, device_id;
         `;
         const sqlValues = [name, description, owner, device_id];
 
         /* Execute the SQL statement and check the returned data */
         const result = await db.query(sqlStmt, sqlValues);
-
+    
         if(!result){
             return {
                 "state": "fail",
