@@ -79,6 +79,16 @@ const getComponent = async (req, res) => {
                 "data": []
             });
         } else {
+
+            if(result?.data?.length <= 0){
+                return res.status(204).json({
+                    "status": 204,
+                    "state": "ok",
+                    "message": "Component not found",
+                    "data": []
+                }); 
+            }
+
             return res.status(200).json({
                 "status": 200,
                 "state": "ok",
