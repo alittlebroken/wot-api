@@ -14,7 +14,7 @@ const getComponents = async (req, res) => {
         /* Get the desired records from the DB */
         const result = await service.findComponents();
 
-        if(!result || result?.data?.length <= 0){
+        if(!result){
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -22,6 +22,16 @@ const getComponents = async (req, res) => {
                 "data": []
             });
         } else {
+
+            if(result?.data?.length <=0){
+                return res.status(204).json({
+                    "status": 204,
+                    "state": "ok",
+                    "message": "No data to retrieve",
+                    "data": []
+                });
+            }
+
             return res.status(200).json({
                 "status": 200,
                 "state": "ok",
@@ -34,7 +44,7 @@ const getComponents = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             "status": 500,
-            "state": fail,
+            "state": "fail",
             "message": error.message,
             "data": []
         });
@@ -81,7 +91,7 @@ const getComponent = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             "status": 500,
-            "state": fail,
+            "state": "fail",
             "message": error.message,
             "data": []
         });
@@ -131,7 +141,7 @@ const createComponent = async (req,res) => {
         console.log(error);
         return res.status(500).json({
             "status": 500,
-            "state": fail,
+            "state": "fail",
             "message": error.message,
             "data": []
         });
@@ -181,7 +191,7 @@ const updateComponent = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             "status": 500,
-            "state": fail,
+            "state": "fail",
             "message": error.message,
             "data": []
         });
@@ -227,7 +237,7 @@ const removeComponent = async (req, res) => {
         console.log(error);
         return res.status(500).json({
             "status": 500,
-            "state": fail,
+            "state": "fail",
             "message": error.message,
             "data": []
         });
