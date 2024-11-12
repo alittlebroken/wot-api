@@ -32,7 +32,8 @@ const components = `
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         description TEXT,
-         owner INT NOT NULL,
+        owner INT NOT NULL,
+        device_id INT NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
     );
