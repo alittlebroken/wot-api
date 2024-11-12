@@ -68,7 +68,7 @@ const getComponent = async (req, res) => {
         validator(id).isDefined().isNumber();
 
         /* get the desired record from the db */
-        const result = await service.getComponent(id);
+        const result = await service.findComponent(id);
 
         /* Check the result is ok */
         if(!result || result?.data?.length <= 0){
