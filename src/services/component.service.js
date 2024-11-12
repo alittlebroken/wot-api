@@ -92,7 +92,7 @@ const findComponent = async id => {
  * @param {number} owner - The owner of the component
  * @param {number} device_id - The device this component is associated with
  */
-const createComponent = async () => {
+const createComponent = async (name, description, owner, device_id) => {
 
     try{
 
