@@ -109,7 +109,7 @@ const createMeasurement = async (device_id, component_id, value, logged) => {
         validator(logged).isDefined().isString().minLen(1);
 
         /* Create the SQL Statement and it's supporting values */
-        const sqlStmt = `INSERT INTO measurements(device_id, component_id, value, logged) VALUES ($1, $2, $3m $4) RETURNING id`;
+        const sqlStmt = `INSERT INTO measurements(device_id, component_id, value, logged) VALUES ($1, $2, $3, $4) RETURNING id`;
         const sqlValues = [device_id, component_id, value, logged];
 
         /* Execute the statement */
