@@ -105,7 +105,7 @@ const createMeasurement = async (device_id, component_id, value, logged) => {
         /* Validate the passed in arguments */
         validator(device_id).isDefined().isNumber();
         validator(component_id).isDefined().isNumber();
-        validator(value).isDefined().isString().minLen(1);
+        validator(value).isDefined();
         validator(logged).isDefined().isString().minLen(1);
 
         /* Create the SQL Statement and it's supporting values */
