@@ -209,7 +209,7 @@ const updateMeasurement = async (req, res) => {
             return res.status(201).json({
                 "status": 201,
                 "state": "ok",
-                "message": "Meaurement updated",
+                "message": "Measurement updated",
                 "data": result?.data
              });
         }
@@ -265,7 +265,7 @@ const removeMeasurement = async (req, res) => {
             return res.status(200).json({
                 "status": 200,
                 "state": "ok",
-                "message": "Meaurement removed",
+                "message": "Measurement removed",
                 "data": result?.data
              });
         }

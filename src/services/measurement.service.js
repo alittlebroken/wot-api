@@ -209,13 +209,13 @@ const removeMeasurement = async id => {
         if(!result || result?.rows?.length <= 0){
             return {
                 "state": "fail",
-                "message": "Unable to remove measurment",
+                "message": "Unable to remove measurement",
                 "data": []
             }
         } else {
             return {
                 "state": "ok",
-                "message": "Measurment successfully removed",
+                "message": "Measurement successfully removed",
                 "data": result?.rows
             }
         }
