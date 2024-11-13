@@ -57,7 +57,7 @@ const findMeasurments = async (req, res) => {
  * @param {object} req - The express request object
  * @param {object} res - The express response object
  */
-const findMeasurement = async id => {
+const findMeasurement = async (req, res) => {
 
     try{
 
@@ -170,7 +170,7 @@ const createMeasurement = async (req, res) => {
  * @param {object} req - The express request object
  * @param {object} res - The express response object
  */
-const updateMeasurement = async (req, res) => {#
+const updateMeasurement = async (req, res) => {
     
     try{
 
