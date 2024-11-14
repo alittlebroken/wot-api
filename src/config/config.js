@@ -14,6 +14,11 @@ const DB_NAME = process.env.DB_NAME;
 const DB_HOST = process.env.DB_HOST;
 const DB_PORT = process.env.DB_PORT;
 
+/* Security settings */
+const SEC_SALT_ROUNDS = process.env.SEC_SALT_ROUNDS;
+const SEC_SALT = process.env.SEC_SALT;
+const JWT_SECRET_TOKEN =  process.env.JWT_SECRET_TOKEN;
+
 module.exports = {
     APP_PORT,
     NODE_ENV,
@@ -22,4 +27,7 @@ module.exports = {
     DB_NAME,
     DB_HOST,
     DB_PORT,
+    SEC_SALT_ROUNDS,
+    SEC_SALT,
+    JWT_SECRET_TOKEN
 }
