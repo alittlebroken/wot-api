@@ -22,7 +22,7 @@ const login = async (username, password) => {
         /* find a vlaid user */
         const user = await userService.findByEmail(username);
 
-        if(!user || user?.data) {
+        if(!user || user?.data?.length <= 0) {
             return {
                 "state": "fail",
                 "message": "No matching user found",
@@ -31,7 +31,7 @@ const login = async (username, password) => {
         } else {
 
             /* Check the passwords macth */
-            const matched = await bcrypt.compare(password, user?.data[0]?.password);
+            const matched = await bc.compare(password, user?.data[0]?.password);
 
             if(!matched){
                 return {
