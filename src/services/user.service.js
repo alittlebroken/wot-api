@@ -146,7 +146,7 @@ const createUser = async (email, password, display_name) => {
         validator(display_name).isDefined().isString().minLen(1);
 
         /* Hash the users password */
-        const hashed_pass = bc.hash(password, parseInt(config.SEC_SALT_ROUNDS));
+        const hashed_pass = await bc.hash(password, parseInt(config.SEC_SALT_ROUNDS));
 
         /* Prepare the sql statement and values */
         const sqlStmt = `
