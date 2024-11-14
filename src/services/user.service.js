@@ -158,7 +158,7 @@ const createUser = async (email, password, display_name) => {
             VALUES (
                 $1, 
                 $2, 
-                %3) 
+                $3) 
             RETURNING id, username, display_name;
         `;
         const sqlValues = [email, hashed_pass, display_name];
