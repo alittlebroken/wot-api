@@ -54,7 +54,7 @@ const users = `
 `;
 
 const keys = `
-    CREATE TABLE IF NOT EXISTS apikeys(
+    CREATE TABLE IF NOT EXISTS keys(
         id SERIAL PRIMARY KEY,
         owner INT NOT NULL,
         device_id INT NOT NULL,
