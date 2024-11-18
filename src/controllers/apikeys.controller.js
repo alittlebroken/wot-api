@@ -120,7 +120,7 @@ const createKey = async (req, res) => {
     try {
 
         /* Extract and validate the request parameters */
-        const { owner, device_id } = req.params;
+        const { owner, device_id } = req.body;
         validator(owner).isDefined().isNumber();
         validator(device_id).isDefined().isNumber();
 
