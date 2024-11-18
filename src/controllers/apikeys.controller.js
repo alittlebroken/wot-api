@@ -70,7 +70,7 @@ const findKey = async (req, res) => {
 
         /* Call the correct service and check the result sent back */
         const results = await service.findApiKey(id);
-        if(!result){
+        if(!resultS){
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
