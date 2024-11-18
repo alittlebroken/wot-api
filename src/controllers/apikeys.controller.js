@@ -15,7 +15,7 @@ const findKeys = async (req, res) => {
         const results = await service.findApiKeys();
 
         /* Check the results sent back to us */
-        if(!result){
+        if(!results){
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
