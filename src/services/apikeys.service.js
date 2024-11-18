@@ -220,7 +220,7 @@ const removeKey = async id => {
         validator(id).isDefined().isNumber();
 
         /* Prepare the sql statement and supporting values */
-        const sqlStmt = `DELET FROM keys WHERE id = $1 RETURNING id, owner, device_id, key`;
+        const sqlStmt = `DELETE FROM keys WHERE id = $1 RETURNING id, owner, device_id, key`;
         const sqlValues = [id];
 
         /* Exeucte the prepared statement and check the result sent back by the db */
