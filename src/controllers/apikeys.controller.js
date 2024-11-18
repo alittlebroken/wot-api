@@ -223,7 +223,7 @@ const removeKey = async (req, res) => {
 
         /* Extract and validate the request parameters */
         const id = parseInt(req.params.id);
-        Validitor(id).isDefined().isNumber();
+        validator(id).isDefined().isNumber();
 
         /* Use the appropriate service and check it's result */
         const results = await service.removeKey(id);
