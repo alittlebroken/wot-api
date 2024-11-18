@@ -2,6 +2,7 @@
 const validator = require('../utils/validation');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const db = require('../database/db');
 
 /**
  * Checks if a user is authenticated and if they are then
@@ -87,6 +88,60 @@ const isAuthenticated = async (req, res, done) => {
 
 }
 
+/**
+ * Checks if the device sending data is registered with a valid api key
+ * @param {object} req - Exporess request object
+ * @param {object} res - Express response object
+ * @param {object} done - Express done object - allows us to move on to the next middleware
+ */
+const isValidDevice = async (req, res, done) => {
+    
+    try {
+
+        /* Extract the request body variables */
+        const { mac_address, api_key } = req.body;
+
+        /* Validate the variables */
+        validator(mac_address).isDefined().isString().minLen(1);
+        validator(api_key).isDefined().isString().minLen(1);
+
+        /* Perform some checks to ensure the device is registered in
+           the system and has been assigned a valid ap key */
+        let sqlStmt = `
+            SELECT d.id, d.mac_address FROM devices d INNER JOIN keys k ON d.id = k.device_id WHERE d.mac_address = $1; 
+        `;
+        let sqlValues = [mac_address];
+
+        /* Execute the query and check the return value */
+        let result = await db.query(sqlStmt, sqlValues);
+
+        if(!result || result?.rows?.length <= 0){
+            return res.status(403).json({
+                "status": 403,
+                "state": "fail",
+                "message": "You are not authorized to use this resource",
+                "data": []
+            })
+        } else {
+            done();
+        }
+
+    } catch(error) {
+
+        console.log(error);
+
+        return res.status(403).json({
+            "status": 403,
+            "state": "fail",
+            "message": "You are not authorized to use this resource",
+            "data": []
+        })
+
+    }
+
+};
+
 module.exports = {
-    isAuthenticated
+    isAuthenticated,
+    isValidDevice
 }
