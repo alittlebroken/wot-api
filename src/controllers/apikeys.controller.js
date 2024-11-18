@@ -167,9 +167,9 @@ const updateKey = async (req, res) => {
         const id = parseInt(req.params.id);
         validator(id).isDefined().isNumber();
 
-        const { column, value } = req.params;
+        const { column, value } = req.body;
         validator(column).isDefined().isString().minLen(1);
-        validator(device_id).isDefined();
+        validator(value).isDefined();
 
         /* Call the correct service and check the result sent back */
         const results = await service.updateApiKey(id, column, value);
