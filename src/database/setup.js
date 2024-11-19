@@ -64,6 +64,16 @@ const keys = `
     );
 `;
 
+const tokens = `
+    CREATE TABLE IF NOT EXISTS tokens(
+        id SERIAL PRIMARY KEY,
+        owner INT NOT NULL,
+        token VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        edited_at TIMESTAMP
+    );
+`;
+
 
 /* Setup the Tables */
 const createTables = async () => {
