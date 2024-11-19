@@ -50,7 +50,10 @@ const login = async (username, password) => {
                     display_name: data.display_name,
                 }
 
-                const token = await jwt.sign(payload, config.JWT_SECRET_TOKEN);
+                /* set the options for the token like Expiry */
+                const options = { expiresIn: config.JWT_DEFAULT_EXPIRY || '5m' }
+
+                const token = await jwt.sign(payload, config.JWT_SECRET_TOKEN, options);
 
                 /* Before sending the token back ensure that it is valid */
                 if(token && token.length > 0){

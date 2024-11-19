@@ -18,6 +18,7 @@ const DB_PORT = process.env.DB_PORT;
 const SEC_SALT_ROUNDS = process.env.SEC_SALT_ROUNDS;
 const SEC_SALT = process.env.SEC_SALT;
 const JWT_SECRET_TOKEN =  process.env.JWT_SECRET_TOKEN;
+const JWT_DEFAULT_EXPIRY = process.env.JWT_DEFAULT_EXPIRY;
 
 module.exports = {
     APP_PORT,
@@ -29,5 +30,6 @@ module.exports = {
     DB_PORT,
     SEC_SALT_ROUNDS,
     SEC_SALT,
-    JWT_SECRET_TOKEN
+    JWT_SECRET_TOKEN,
+    JWT_DEFAULT_EXPIRY
 }
