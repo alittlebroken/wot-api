@@ -42,7 +42,7 @@ const login = async (username, password) => {
                 return {
                     "state": "ok",
                     "message": "Logged in successfully",
-                    "data": []
+                    "data": user
                 }
 
             }
