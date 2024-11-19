@@ -38,6 +38,31 @@ const generateTokens = async payload => {
 
 };
 
+/**
+ * Verifies an access token 
+ * @param {String} token - The token being verified
+ */
+const verifyAccessToken = async token => {
+
+    try {
+
+        /* Validate the passed in arguments */
+        validator(token).isDefined().isString().minLen(1);
+
+        /* Verify the token */
+        return await jwt.verify(token, config.JWT_SECRET_TOKEN);
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        }
+    }
+
+};
+
 module.exports = {
     generateTokens
 }
