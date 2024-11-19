@@ -98,12 +98,23 @@ const isValidDevice = async (req, res, done) => {
     
     try {
 
-        /* Extract the request body variables */
-        const { mac_address, api_key } = req.body;
-
-        /* Validate the variables */
-        validator(mac_address).isDefined().isString().minLen(1);
+        /* Extract and validate the APi Key */
+        const api_key = req.get('x-api-key');
         validator(api_key).isDefined().isString().minLen(1);
+
+        if(!api_key){
+            return res.status(403).json({
+                "status": 403,
+                "state": "fail",
+                "message": "You are not authorized to use this resource",
+                "data": []
+            })
+        }
+
+        /* Extract and validate the request body variables */
+        const { mac_address } = req.body;
+        validator(mac_address).isDefined().isString().minLen(1);
+
 
         /* Perform some checks to ensure the device is registered in
            the system and has been assigned a valid ap key */
