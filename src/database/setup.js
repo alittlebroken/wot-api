@@ -97,6 +97,9 @@ const createTables = async () => {
             result = await db.query(keys);
             console.log("API Keys table created");
 
+            result = await db.query(tokens);
+            console.log("Refresh Tokens table created");
+
             return true;
         } catch(err) {
             console.log(err);
