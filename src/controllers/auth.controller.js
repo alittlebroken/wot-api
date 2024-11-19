@@ -156,7 +156,7 @@ const logout = async (req, res) => {
             res.status(404).json({
                 "status": 404,
                 "state": "fail",
-                "message": "No vlaid refresh token found",
+                "message": "No valid refresh token found",
                 "data": []
             })
         }
