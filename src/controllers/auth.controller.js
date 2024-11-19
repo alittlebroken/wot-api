@@ -33,18 +33,21 @@ const login = async (req, res) => {
             });
         } else {
             
+            /* Extract the user data from the result */
+            const user = result?.data?.data[0];
+
             /* Login was successful, lets generate the auth tokens by sending the generator
                 a payload to sign
             */
            const payload = {
-            id: result?.data?.id,
-            username: result?.data?.username,
-            display_name: result?.data?.display_name,
-            last_logon: result?.data?.last_logon
+            id: user?.id,
+            username: user?.username,
+            display_name: user?.display_name,
+            last_logon: user?.last_logon
            }
 
            const { accessToken, refreshToken } = await security.generateTokens(payload);
-           
+
            /* Check if the user does not already have a refresh token assigned */
            const tokenExists = await refreshTokenService.findToken(payload.id);
            if(tokenExists?.data?.length > 0){
