@@ -3,6 +3,7 @@ const validator = require('../utils/validation');
 const service = require('../services/auth.service');
 const userService = require('../services/user.service');
 const security = require('../utils/tokens');
+const refreshTokenService = require('../services/refreshtokens.service');
 
 /**
  * Allows the user to login and get a JWT token to authenticate further requests
@@ -111,7 +112,80 @@ const registerUser = async (req, res) => {
 
 };
 
+/**
+ * Logs a user out of the system
+ * @param {object} req - The express request object
+ * @param {object} res - The express response object
+ */
+const logout = async (req, res) => {
+
+    try {
+
+        /* Check that we have a refresh token and it is valid */
+        if(!req.cookies['refreshToken']) {
+            res.status(404).json({
+                "status": 404,
+                "state": "fail",
+                "message": "No vlaid refresh token found",
+                "data": []
+            })
+        }
+
+        /* Extrcat the token and verify it */
+        const token = req.cookies['refreshToken'];
+        const verifiedToken = security.verifyRefreshToken(token);
+        if(verifiedToken){
+
+            /* Check to see if the refreshToken is in use by the user */
+            const storedToken = await refreshTokenService.findToken(verifiedToken.id);
+            
+            if(storedToken?.data?.length > 0){
+                /* User does have a token, so lets remove it */
+                const removedToken = await refreshTokenService.removeToken(storedToken.data[0].id);
+
+                if(!removedToken){
+                    /* Something has gone wrong whilst logging the user out and removing the refresh key */
+                    return res.status(500).json({
+                        "status": 500,
+                        "state": "fail",
+                        "message": "Problem logging out user",
+                        "data": []
+                    });
+                }
+
+            }
+
+            /* Remove the refresh token cookie and let the user know we logged out ok */
+            return res.clearCookie('refreshToken', { HttpOnly: true }).status(200).json({
+                "status": 200,
+                "state": "ok",
+                "message": "logged out successfully",
+                "data": []
+            });
+
+
+        } else {
+            res.status(400).json({
+                "status": 400,
+                "state": "fail",
+                "message": "Invalid refresh token supplied",
+                "data": []
+            })
+        }
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        }
+    }
+
+};
+
 module.exports = {
     login,
-    registerUser
+    registerUser,
+    logout
 }
