@@ -41,6 +41,7 @@ const isAuthenticated = async (req, res, done) => {
             } else {
                 /* Now we need to ensure the token supplied is valid */
                 const token = await jwt.verify(auth_split[1], config.JWT_SECRET_TOKEN);
+
                 if(!token){
                     return res.status(401).json({
                         "status": 401,
@@ -78,6 +79,17 @@ const isAuthenticated = async (req, res, done) => {
 
     } catch(error) {
         console.log(error);
+
+        /* Check if the token has exopired at all */
+        if(error.message === "jwt expired"){
+            return res.status(401).json({
+                "status": 401,
+                "state": "fail",
+                "message": "access token expired",
+                "data": []
+            })
+        }
+
         return res.status(401).json({
             "status": 401,
             "state": "fail",
