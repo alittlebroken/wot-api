@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require('../config/config');
+const validator = require('../utils/validation');
 
 /**
  * Creates a new set of access tokens 
@@ -14,7 +15,7 @@ const generateTokens = async payload => {
 
         /* Create options for each type of token */
         const optAccess = { expiresIn: config.JWT_DEFAULT_EXPIRY || "5m" };
-        const optRefresh = { ExpiresIn: config.JWT_DEFAULT_EXPIRY_REFRESH || "1d" };
+        const optRefresh = { expiresIn: config.JWT_DEFAULT_EXPIRY_REFRESH || "1d" };
 
         /* Sign the tokens */
         const accessToken = await jwt.sign(payload, config.JWT_SECRET_TOKEN, optAccess);
@@ -24,7 +25,7 @@ const generateTokens = async payload => {
         validator(accessToken).isDefined().isString().minLen(1);
         validator(refreshToken).isDefined().isString().minLen(1);
 
-        return accessToken, refreshToken
+        return { accessToken, refreshToken }
 
     } catch(error) {
         console.log(error);
