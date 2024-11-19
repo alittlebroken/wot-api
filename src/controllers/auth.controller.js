@@ -2,6 +2,7 @@
 const validator = require('../utils/validation');
 const service = require('../services/auth.service');
 const userService = require('../services/user.service');
+const security = require('../utils/tokens');
 
 /**
  * Allows the user to login and get a JWT token to authenticate further requests
@@ -30,12 +31,24 @@ const login = async (req, res) => {
                 "data": []
             });
         } else {
-            return res.status(200).json({
-                "status": 200,
-                "state": "ok",
-                "message": "Login successful",
-                "data": result
-            })
+            
+            /* Login was successful, lets generate the auth tokens by sending the generator
+                a payload to sign
+            */
+           const payload = {
+            id: result?.data?.id,
+            username: result?.data?.username,
+            display_name: result?.data?.display_name,
+            last_logon: result?.data?.last_logon
+           }
+
+           const { accessToken, refreshToken } = await security.generateTokens(payload);
+           
+           /* The refresh token needs to be in a securew httpOnly cookie, whilst the access token can just be 
+            sent back in the response */
+            res.cookie('refreshToken', refreshToken, { HttpOnly: true });
+            res.status(200).send(accessToken);
+
         }
 
     } catch(error) {
