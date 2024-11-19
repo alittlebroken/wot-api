@@ -7,7 +7,7 @@ const db = require('../database/db');
 /**
  * Checks if a user is authenticated and if they are then
  * adds the user details to the request object
- * @param {object} req - Exporess request object
+ * @param {object} req - Express request object
  * @param {object} res - Express response object
  * @param {object} done - Express done object - allows us to move on to the next middleware
  */
@@ -90,7 +90,7 @@ const isAuthenticated = async (req, res, done) => {
 
 /**
  * Checks if the device sending data is registered with a valid api key
- * @param {object} req - Exporess request object
+ * @param {object} req - Express request object
  * @param {object} res - Express response object
  * @param {object} done - Express done object - allows us to move on to the next middleware
  */
