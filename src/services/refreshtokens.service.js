@@ -63,7 +63,7 @@ const findToken = async id => {
         validator(id).isDefined().isNumber();
 
         /* Prepare the sql statement and it's supporting values */
-        const sqlStmt = "SELECT id, owner, token FROM tokens WHERE id = $1;";
+        const sqlStmt = "SELECT id, owner, token FROM tokens WHERE owner = $1;";
         const sqlValues = [id];
 
         /* Execute the statment and check the results returned */
