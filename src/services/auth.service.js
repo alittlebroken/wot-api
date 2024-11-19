@@ -19,7 +19,7 @@ const login = async (username, password) => {
         validator(username).isDefined().isString().minLen(1);
         validator(password).isDefined().isString().minLen(8);
 
-        /* find a vlaid user */
+        /* find a valid user */
         const user = await userService.findByEmail(username);
 
         if(!user || user?.data?.length <= 0) {
