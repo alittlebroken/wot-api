@@ -53,6 +53,17 @@ const users = `
     );
 `;
 
+const keys = `
+    CREATE TABLE IF NOT EXISTS keys(
+        id SERIAL PRIMARY KEY,
+        owner INT NOT NULL,
+        device_id INT NOT NULL,
+        key VARCHAR(255) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        edited_at TIMESTAMP
+    );
+`;
+
 
 /* Setup the Tables */
 const createTables = async () => {
@@ -72,6 +83,9 @@ const createTables = async () => {
 
             result = await db.query(measurements);
             console.log("Measurements table created");
+
+            result = await db.query(keys);
+            console.log("API Keys table created");
 
             return true;
         } catch(err) {
