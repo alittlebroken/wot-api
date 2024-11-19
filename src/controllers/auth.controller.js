@@ -45,7 +45,34 @@ const login = async (req, res) => {
 
            const { accessToken, refreshToken } = await security.generateTokens(payload);
            
-           /* The refresh token needs to be in a securew httpOnly cookie, whilst the access token can just be 
+           /* Check if the user does not already have a refresh token assigned */
+           const tokenExists = await refreshTokenService.findToken(payload.id);
+           if(tokenExists?.data?.length > 0){
+
+            /* Remove the existing token and assign the new one */
+            const result = await refreshTokenService.removeToken(tokenExists?.data[0].id);
+            if(!result){
+                return res.status(500).json({
+                    "status": 500,
+                    "state": "fail",
+                    "message": "Problem logging in",
+                    "data": []
+                });
+            } else {
+                /* Store the new refresh token for the user */
+                const newToken = await refreshTokenService.createToken(payload.id, refreshToken);
+                if(!newToken){
+                    return res.status(500).json({
+                        "status": 500,
+                        "state": "fail",
+                        "message": "Problem logging in",
+                        "data": []
+                    });
+                }
+            }
+           }
+
+           /* The refresh token needs to be in a secure httpOnly cookie, whilst the access token can just be 
             sent back in the response */
             res.cookie('refreshToken', refreshToken, { HttpOnly: true });
             res.status(200).send(accessToken);
