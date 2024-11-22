@@ -16,7 +16,7 @@ const isAuthenticated = async (req, res, done) => {
     try{
 
         /* Attempt to get the authentication header */
-        const auth = req.get('Authorization');
+        const auth = req.get('Authorisation');
 
         if(!auth){
             return res.status(401).json({
