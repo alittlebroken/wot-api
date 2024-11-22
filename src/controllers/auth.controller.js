@@ -78,7 +78,7 @@ const login = async (req, res) => {
            /* The refresh token needs to be in a secure httpOnly cookie, whilst the access token can just be 
             sent back in the response */
             res.cookie('refreshToken', refreshToken, { HttpOnly: true });
-            res.status(200).send(accessToken);
+            res.status(200).json({accessToken});
 
         }
 
