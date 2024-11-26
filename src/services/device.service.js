@@ -5,13 +5,12 @@ const validator = require('../utils/validation');
 /**
  * Adds a new device to the system
  * @param {String} name - The name of the device
- * @param {String} api_key - The api key for the device
  * @param {String} mac_address - The mac address of the device
  * @param {numeric} owner - The user the device belongs to
  * @param {String} description - Description of the device
  * @returns {array} - Details of the device added
  */
-const createDevice = async (name, api_key, mac_address, owner, description) => {
+const createDevice = async (name, mac_address, owner, description) => {
 
     try{
 
@@ -21,14 +20,6 @@ const createDevice = async (name, api_key, mac_address, owner, description) => {
             return {
                 "status": "fail",
                 "message": "Device name is missing or incorrect",
-                "data": []
-            }
-        }
-
-        if(typeof api_key !== 'string' || api_key === '' || api_key === undefined || api_key === null){
-            return {
-                "status": "fail",
-                "message": "Device API Key is missing or incorrect",
                 "data": []
             }
         }
@@ -50,14 +41,14 @@ const createDevice = async (name, api_key, mac_address, owner, description) => {
         }
 
         /* Create the sql statement needed to add the new device */
-        const sqlStmt = `INSERT INTO devices (name, api_key, mac_address, owner, description) VALUES($1, $2, $3, $4, $5);`
+        const sqlStmt = `INSERT INTO devices (name, mac_address, owner, description) VALUES($1, $2, $3, $4, $5);`
 
         /* Values being added */
-        const stmtValues = [name, api_key, mac_address, owner, description];
+        const stmtValues = [name, mac_address, owner, description];
 
-        /* Check that the mac_address AND api_key combo have not already been added before */
-        const chkStmt = `SELECT id FROM devices WHERE api_key = $1 AND mac_address = $2`;
-        const chkValues = [api_key, mac_address];
+        /* Check that the mac_address is not already been added before */
+        const chkStmt = `SELECT id FROM devices WHERE mac_address = $1`;
+        const chkValues = [mac_address];
 
         /* Perform the check to see if the device already exists */
         const chkRes = await db.query(chkStmt, chkValues);
@@ -72,8 +63,6 @@ const createDevice = async (name, api_key, mac_address, owner, description) => {
 
         /* Save the data to the DB */
         const result = await db.query(sqlStmt, stmtValues);
-
-        console.log(result)
 
         if (!result || result?.rows?.length < 0){
             return {
