@@ -17,7 +17,6 @@ const measurements = `
 const devices = `
     CREATE TABLE IF NOT EXISTS devices(
         id SERIAL PRIMARY KEY,
-        api_key VARCHAR(255) NOT NULL,
         mac_address VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT,
