@@ -68,8 +68,8 @@ const findToken = async id => {
 
         /* Execute the statment and check the results returned */
         const results = await db.query(sqlStmt, sqlValues);
-
-        if(!results) {
+        
+        if(!results.rows) {
             return {
                 "state": "fail",
                 "message": "Unable to retrieve token",
@@ -77,7 +77,7 @@ const findToken = async id => {
             }
         } else {
 
-            if(!results?.rows?.length <= 0 ){
+            if(results?.rows?.length <= 0 ){
                 return {
                     "state": "fail",
                     "message": "No token found",
