@@ -19,19 +19,16 @@ const createDevice = async (req, res) => {
             name,
             description,
             owner,
-            api_key,
             mac_address,
         } = req.body
 
         /* Validate the extracted request body variables */
-        validateMe("Test Please").isString().minLen(1).validate();
         validateMe(name).isString().minLen(1);
         validateMe(owner).isNumber();
-        validateMe(api_key).isString().minLen(12);
         validateMe(mac_address).isString().minLen(6);
 
         /* Add the device to the DB */
-        const result = await service.createDevice(name, api_key, mac_address, owner, description);
+        const result = await service.createDevice(name, mac_address, owner, description);
 
         /* Check the result is OK and we have no errors */
         if(result.status === "fail"){
