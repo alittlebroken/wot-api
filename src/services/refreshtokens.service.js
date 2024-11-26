@@ -119,7 +119,7 @@ const createToken = async (owner, token) => {
 
         /* Determine if the token already exists */
         let sqlStmt = "SELECT id, owner, token FROM tokens WHERE token = $1;";
-        let slqValues = [token];
+        let sqlValues = [token];
 
         let check = await db.query(sqlStmt, sqlValues);
 
