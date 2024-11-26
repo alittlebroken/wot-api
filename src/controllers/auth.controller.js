@@ -52,6 +52,7 @@ const login = async (req, res) => {
 
            /* Check if the user does not already have a refresh token assigned */
            const tokenExists = await refreshTokenService.findToken(payload.id);
+           
            if(tokenExists?.data?.length > 0){
 
             /* Remove the existing token and assign the new one */
@@ -66,6 +67,7 @@ const login = async (req, res) => {
             } else {
                 /* Store the new refresh token for the user */
                 const newToken = await refreshTokenService.createToken(payload.id, refreshToken);
+                console.log(newToken)
                 if(!newToken){
                     return res.status(500).json({
                         "status": 500,
@@ -75,6 +77,20 @@ const login = async (req, res) => {
                     });
                 }
             }
+           } else {
+
+                /* No refresh token exists, just add it in */
+                const newToken = await refreshTokenService.createToken(payload.id, refreshToken);
+                
+                if(!newToken){
+                    return res.status(500).json({
+                        "status": 500,
+                        "state": "fail",
+                        "message": "Problem logging in",
+                        "data": []
+                    });
+                }
+
            }
 
            /* The refresh token needs to be in a secure httpOnly cookie, whilst the access token can just be 
