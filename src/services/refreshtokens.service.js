@@ -239,8 +239,61 @@ const removeToken = async id => {
         validator(id).isDefined().isNumber();
 
         /* Prepare the sql statement and it's supporting values */
-        const sqlStmt = "DELET FROM tokens WHERE id = $1 RETURNING id, owner, token;";
+        const sqlStmt = "DELETE FROM tokens WHERE id = $1 RETURNING id, owner, token;";
         const sqlValues = [id];
+
+        /* Execute the statement and check the result */
+        const result = await db.query(sqlStmt, sqlValues);
+
+        if(!result){
+            return {
+                "state": "fail",
+                "message": "Problem whilst removing token",
+                "data": []
+            }
+        } else {
+
+            if(result?.rows?.length <= 0){
+                return {
+                    "state": "fail",
+                    "message": "no token found to be removed",
+                    "data": []
+                }
+            }
+
+            return {
+                "state": "ok",
+                "message": "token successfully removed",
+                "data": result?.rows
+            }
+
+        }
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        }
+    }
+
+};
+
+/**
+ * Removes a token based on owner
+ * @param {number} id - The id of the token beign removed
+ */
+const removeTokenByOwner = async owner => {
+
+    try {
+
+        /* Validate the passed in argument */
+        validator(owner).isDefined().isNumber();
+
+        /* Prepare the sql statement and it's supporting values */
+        const sqlStmt = "DELETE FROM tokens WHERE owner = $1 RETURNING id, owner, token;";
+        const sqlValues = [owner];
 
         /* Execute the statement and check the result */
         const result = await db.query(sqlStmt, sqlValues);
@@ -285,5 +338,6 @@ module.exports = {
     findToken,
     createToken,
     updateToken,
-    removeToken
+    removeToken,
+    removeTokenByOwner
 }
