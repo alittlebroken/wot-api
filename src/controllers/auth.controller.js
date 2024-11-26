@@ -4,6 +4,8 @@ const service = require('../services/auth.service');
 const userService = require('../services/user.service');
 const security = require('../utils/tokens');
 const refreshTokenService = require('../services/refreshtokens.service');
+const jwt = require('jsonwebtoken');
+const config = require('../config/config');
 
 /**
  * Allows the user to login and get a JWT token to authenticate further requests
@@ -77,8 +79,10 @@ const login = async (req, res) => {
 
            /* The refresh token needs to be in a secure httpOnly cookie, whilst the access token can just be 
             sent back in the response */
-            res.cookie('refreshToken', refreshToken, { HttpOnly: true });
-            res.status(200).json({accessToken});
+            const cookieOptions = {
+                httpOnly: true
+            }
+            res.cookie('refreshToken', refreshToken, cookieOptions).status(200).json({accessToken});
 
         }
 
@@ -152,8 +156,8 @@ const logout = async (req, res) => {
     try {
 
         /* Check that we have a refresh token and it is valid */
-        if(!req.cookies['refreshToken']) {
-            res.status(404).json({
+        if(!req.cookies || !req.cookies.refreshToken) {
+            return res.status(404).json({
                 "status": 404,
                 "state": "fail",
                 "message": "No valid refresh token found",
@@ -186,7 +190,11 @@ const logout = async (req, res) => {
             }
 
             /* Remove the refresh token cookie and let the user know we logged out ok */
-            return res.clearCookie('refreshToken', { HttpOnly: true }).status(200).json({
+            const cookieOptions = {
+                httpOnly: true,
+            }
+            res.clearCookie('refreshToken', cookieOptions);
+            res.status(200).json({
                 "status": 200,
                 "state": "ok",
                 "message": "logged out successfully",
@@ -214,8 +222,61 @@ const logout = async (req, res) => {
 
 };
 
+/**
+ * Using the refresh token it generates a new access token for the user
+ * @param {object} req - The express request object
+ * @param {object} res - The express response object
+ */
+const refresh = async (req, res) => {
+
+    try {
+
+        /* Ensure that we have a valid refresh token */
+        if(!req.cookies || !req.cookies.refreshToken){
+            return res.status(401).send("Unauthorised access. Please login.");
+        } else {
+
+            /* Verify the passed in refresh token */
+            const refreshToken = await jwt.verify(req.cookies.refreshToken, config.JWT_SECRET_REFRESH);
+            if(!refreshToken){
+                return res.status(401).send("Problem verifying refresh token. Please login.");
+            } else {
+
+                /* Generate a new access token.
+                   First get the user and then generate a new token
+                */
+               const payload = { 
+                id: refreshToken.id,
+                display_name: refreshToken.display_name,
+                username: refreshToken.username,
+                last_logon: refreshToken.last_logon
+               };
+
+               const optAccess = { expiresIn: config.JWT_DEFAULT_EXPIRY || "5m" };
+                /* Sign the tokens */
+                const accessToken = await jwt.sign(payload, config.JWT_SECRET_TOKEN, optAccess);
+                
+                console.log("Access token refreshed");
+                return res.status(200).json(accessToken);
+
+            }
+
+        }
+
+    } catch(error) {
+        console.log(error);
+        return {
+            "state": "fail",
+            "message": error.message,
+            "data": []
+        }
+    }
+
+}
+
 module.exports = {
     login,
     registerUser,
-    logout
+    logout,
+    refresh
 }
