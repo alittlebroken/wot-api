@@ -19,6 +19,8 @@ const SEC_SALT_ROUNDS = process.env.SEC_SALT_ROUNDS;
 const SEC_SALT = process.env.SEC_SALT;
 const JWT_SECRET_TOKEN =  process.env.JWT_SECRET_TOKEN;
 const JWT_DEFAULT_EXPIRY = process.env.JWT_DEFAULT_EXPIRY;
+const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
+const JWT_DEFAULT_EXPIRY_REFRESH = process.env.JWT_DEFAULT_EXPIRY_REFRESH;
 
 module.exports = {
     APP_PORT,
@@ -31,5 +33,7 @@ module.exports = {
     SEC_SALT_ROUNDS,
     SEC_SALT,
     JWT_SECRET_TOKEN,
-    JWT_DEFAULT_EXPIRY
+    JWT_DEFAULT_EXPIRY,
+    JWT_SECRET_REFRESH,
+    JWT_DEFAULT_EXPIRY_REFRESH
 }
