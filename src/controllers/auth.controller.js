@@ -56,7 +56,8 @@ const login = async (req, res) => {
            if(tokenExists?.data?.length > 0){
 
             /* Remove the existing token and assign the new one */
-            const result = await refreshTokenService.removeToken(tokenExists?.data[0].id);
+            const result = await refreshTokenService.removeTokenByOwner(tokenExists?.data[0].owner);
+            
             if(!result){
                 return res.status(500).json({
                     "status": 500,
@@ -67,7 +68,7 @@ const login = async (req, res) => {
             } else {
                 /* Store the new refresh token for the user */
                 const newToken = await refreshTokenService.createToken(payload.id, refreshToken);
-                console.log(newToken)
+                
                 if(!newToken){
                     return res.status(500).json({
                         "status": 500,
@@ -183,7 +184,8 @@ const logout = async (req, res) => {
 
         /* Extract the token and verify it */
         const token = req.cookies['refreshToken'];
-        const verifiedToken = security.verifyRefreshToken(token);
+        const verifiedToken = await security.verifyRefreshToken(token);
+        
         if(verifiedToken){
 
             /* Check to see if the refreshToken is in use by the user */
