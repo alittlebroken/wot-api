@@ -181,7 +181,7 @@ const logout = async (req, res) => {
             })
         }
 
-        /* Extrcat the token and verify it */
+        /* Extract the token and verify it */
         const token = req.cookies['refreshToken'];
         const verifiedToken = security.verifyRefreshToken(token);
         if(verifiedToken){
