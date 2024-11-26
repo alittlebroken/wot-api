@@ -193,7 +193,7 @@ const logout = async (req, res) => {
             
             if(storedToken?.data?.length > 0){
                 /* User does have a token, so lets remove it */
-                const removedToken = await refreshTokenService.removeToken(storedToken.data[0].id);
+                const removedToken = await refreshTokenService.removeTokenByOwner(storedToken.data[0].owner);
 
                 if(!removedToken){
                     /* Something has gone wrong whilst logging the user out and removing the refresh key */
