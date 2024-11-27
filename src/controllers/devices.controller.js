@@ -1,5 +1,6 @@
 /* Validation library */
 const validateMe = require('../utils/validation');
+const {logger} = require('../config/logging');
 
 /* Import the service module */
 const service = require("../services/device.service");
@@ -32,6 +33,7 @@ const createDevice = async (req, res) => {
 
         /* Check the result is OK and we have no errors */
         if(result.status === "fail"){
+            logger.log('error', 'Device controller: Problem adding device ');
             return res.status(400).json({
                 status: 400,
                 state: 'fail',
@@ -49,7 +51,7 @@ const createDevice = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Device controller: ' + error.message);
 
         return res.status(500).json({
             status: 500,
@@ -76,6 +78,7 @@ const findDevices = async (req, res) => {
         const results = await service.findDevices();
 
         if(!results || results?.state === "fail"){
+            logger.log('error', 'Device controller: Problem retrieving list of devices');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -85,7 +88,7 @@ const findDevices = async (req, res) => {
         } else {
 
             if(res?.data?.length <= 0){
-
+                logger.log('warn', 'Device controller: No devices found');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -104,6 +107,7 @@ const findDevices = async (req, res) => {
         }
 
     } catch(error) {
+        logger.log('error', 'Device controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -135,6 +139,7 @@ const findDevice = async (req, res) => {
 
         /* Check to see if any records were found and handle gracefully either way */
         if(!result || result?.state === "fail"){
+            logger.log('error', 'Device controller: Problem finding specified device');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -144,6 +149,7 @@ const findDevice = async (req, res) => {
         } else {
 
             if(result?.data?.length <= 0){
+                logger.log('error', 'Device controller: No device found matching passed in id');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -163,7 +169,7 @@ const findDevice = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Device controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -202,6 +208,7 @@ const updateDevice = async (req, res) => {
 
         /* Check the update was successful and report back */
         if(!result || result?.state === "fail"){
+            logger.log('error', 'Device controller: Problem updating device');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -219,7 +226,7 @@ const updateDevice = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Device controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -250,6 +257,7 @@ const removeDevice = async (req, res) => {
         const result = await service.removeDevice(id);
 
         if(!result || result.state === "fail"){
+            logger.log('error', 'Device controller: Problem removing device');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -258,6 +266,7 @@ const removeDevice = async (req, res) => {
             });
         } else {
             if(result?.rows?.length <= 0){
+                logger.log('warn', 'Device controller: Unable to remove device matching passed in id');
                 return res.status(404).json({
                     "status": 494,
                     "state": "fail",
@@ -274,7 +283,7 @@ const removeDevice = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Device controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",

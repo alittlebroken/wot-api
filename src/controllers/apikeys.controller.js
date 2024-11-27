@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const validator = require('../utils/validation');
 const service = require('../services/apikeys.service');
+const {logger} = require('../config/logging');
 
 /**
  * Gets a list of all api keys in the system
@@ -16,6 +17,7 @@ const findKeys = async (req, res) => {
 
         /* Check the results sent back to us */
         if(!results){
+            logger.log('error', 'API Keys Controller: Problem getting list of keys');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -25,6 +27,7 @@ const findKeys = async (req, res) => {
         } else {
 
             if(results?.data?.length <= 0){
+                logger.log('warn', 'API Keys Controller: No keys found');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -44,7 +47,7 @@ const findKeys = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'API Keys Controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -71,6 +74,7 @@ const findKey = async (req, res) => {
         /* Call the correct service and check the result sent back */
         const results = await service.findApiKey(id);
         if(!results){
+            logger.log('error', 'API Keys Controller: Problem whilst retrieving key');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -80,6 +84,7 @@ const findKey = async (req, res) => {
         } else {
 
             if(results?.data?.length <= 0){
+                logger.log('warn', 'API Keys Controller: No matching key found');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -99,7 +104,7 @@ const findKey = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'API Keys Controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -127,6 +132,7 @@ const createKey = async (req, res) => {
         /* Call the correct service and check the result sent back */
         const results = await service.createApiKey(owner, device_id);
         if(!results || results?.data?.length <= 0){
+            logger.log('error', 'API Keys Controller: Unable to create new key');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -143,7 +149,7 @@ const createKey = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'API Keys Controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -175,6 +181,7 @@ const updateKey = async (req, res) => {
         const results = await service.updateApiKey(id, column, value);
 
         if(!results){
+            logger.log('error', 'API Keys Controller: Unable to update key');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -184,6 +191,7 @@ const updateKey = async (req, res) => {
         } else {
 
             if(results?.data?.length <= 0) {
+                logger.log('warn', 'API Keys Controller: No key found to update');
                 return res.status(404).json({
                     "status": 404,
                     "state": "ok",
@@ -201,7 +209,7 @@ const updateKey = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'API Keys Controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -229,6 +237,7 @@ const removeKey = async (req, res) => {
         const results = await service.removeKey(id);
 
         if(!results){
+            logger.log('error', 'API Keys Controller: Unable to remove key');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -238,6 +247,7 @@ const removeKey = async (req, res) => {
         } else {
 
             if(results?.data?.length <= 0) {
+                logger.log('warn', 'API Keys Controller: No key found to remove');
                 return res.status(404).json({
                     "status": 404,
                     "state": "ok",
@@ -257,7 +267,7 @@ const removeKey = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'API Keys Controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
