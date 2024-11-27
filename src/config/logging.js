@@ -1,4 +1,5 @@
 const morgan = require('morgan');
+const winston = require('winston');
 const fs = require('fs');
 const path = require('path');
 const config = require('./config');
@@ -14,7 +15,35 @@ const morganLog = morgan(
 
 const morganConsole = morgan('combined');
 
+/* Setup the various winston logging options */
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        winston.format.errors({ stack: true}),
+        winston.format.splat(),
+        winston.format.json()
+    ),
+    defaultMeta: { service: 'wot-api'},
+    transports: [
+        new winston.transports.File({ filename: path.join(rootDir, config.LOG_DIR, config.LOG_ERROR), level: 'error'}),
+        new winston.transports.File({ filename: path.join(rootDir, config.LOG_DIR, config.LOG_APP)})
+    ]
+})
+
+if(config.NODE_ENV === "development"){
+    logger.add(new winston.transports.Console({
+        format: winston.format.combine(
+            winston.format.colorize(),
+            winston.format.simple()
+        )
+    }));
+};
+
 module.exports = {
     morganLog,
-    morganConsole
+    morganConsole,
+    logger
 };
