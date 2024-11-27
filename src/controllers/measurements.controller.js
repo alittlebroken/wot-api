@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const validator = require('../utils/validation');
 const service = require('../services/measurement.service');
+const {logger} = require('../config/logging');
 
 /**
  * Lists all measurements in the system
@@ -16,6 +17,7 @@ const findMeasurments = async (req, res) => {
 
         /* Check the result to ensure that the service ran as expected */
         if(!result){
+            logger.log('error', 'Measurement controller: Problem retrieving list of measurements');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -24,6 +26,7 @@ const findMeasurments = async (req, res) => {
             });
         } else {
             if(result?.data?.length <= 0){
+                logger.log('warn', 'Measurement controller: No measurements found');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -41,7 +44,7 @@ const findMeasurments = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Measurement controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -72,6 +75,7 @@ const findMeasurement = async (req, res) => {
 
         /* Check the result to ensure that the service ran as expected */
         if(!result){
+            logger.log('error', 'Measurement controller: Problem retrieving measurement with the passed in id');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -80,6 +84,7 @@ const findMeasurement = async (req, res) => {
             });
         } else {
             if(result?.data?.length <= 0){
+                logger.log('warn', 'Measurement controller: No measurement found with matching id');
                 return res.status(204).json({
                     "status": 204,
                     "sate": "ok",
@@ -98,7 +103,7 @@ const findMeasurement = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Measurement controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -137,6 +142,7 @@ const createMeasurement = async (req, res) => {
 
         /* Check the result to ensure that the service ran as expected */
         if(!result || result?.data?.length <= 0){
+            logger.log('error', 'Measurement controller: Problem creating measurement');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -154,7 +160,7 @@ const createMeasurement = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Measurement controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -190,6 +196,7 @@ const updateMeasurement = async (req, res) => {
 
         /* Check the result to ensure that the service ran as expected */
         if(!result){
+            logger.log('error', 'Measurement controller: Problem updating specified measurement');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -198,6 +205,7 @@ const updateMeasurement = async (req, res) => {
             });
         } else {
             if(result?.data?.length <= 0){
+                logger.log('error', 'Measurement controller: Unbale to update measurment with matching id');
                 return res.status(204).json({
                     "status": 204,
                     "sate": "ok",
@@ -215,7 +223,7 @@ const updateMeasurement = async (req, res) => {
         }
 
     }  catch(error) {
-        console.log(error);
+        logger.log('error', 'Measurement controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -246,6 +254,7 @@ const removeMeasurement = async (req, res) => {
 
         /* Check the result to ensure that the service ran as expected */
         if(!result){
+            logger.log('error', 'Measurement controller: Problem trying to remove the specified measurement');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -254,6 +263,7 @@ const removeMeasurement = async (req, res) => {
             });
         } else {
             if(result?.data?.length <= 0){
+                logger.log('error', 'Measurement controller: Unable to find measurement to remove with matching id');
                 return res.status(204).json({
                     "status": 204,
                     "sate": "ok",
@@ -271,7 +281,7 @@ const removeMeasurement = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Measurement controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",

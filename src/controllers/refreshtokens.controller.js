@@ -4,6 +4,7 @@ const service = require('../services/refreshtokens.service');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const security = require('../utils/tokens');
+const {logger} = require('../config/logging');
 
 /**
  * Rerfresh an access token
@@ -16,6 +17,7 @@ const refreshToken = async (req, res) => {
 
         /* Check that we have a refresh token to use */
         if(!req.cookies['refreshToken']){
+            logger.log('error', 'Refresh Token controller: No refresh token provided');
             return res.status(401).json({
                 "status": 401,
                 "state": "fail",
@@ -28,6 +30,7 @@ const refreshToken = async (req, res) => {
         const token = await jwt.verify(req.cookies['refreshToken'], config.JWT_SECRET_REFRESH);
 
         if(!token){
+            logger.log('error', 'Refresh Token controller: Invalid refresh token supplied');
             return res.status(401).json({
                 "status": 401,
                 "state": "fail",
@@ -47,6 +50,7 @@ const refreshToken = async (req, res) => {
         if(accessToken){
             return res.status(200).send(accessToken);
         } else {
+            logger.log('error', 'Refresh Token controller: Unable to generate a new access token');
             return res.status(500).json({
                 "status": 400,
                 "state": "fail",
@@ -57,7 +61,7 @@ const refreshToken = async (req, res) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Refresh Token controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",

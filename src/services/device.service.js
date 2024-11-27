@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const db = require('../database/db');
 const validator = require('../utils/validation');
+const {logger} = require('../config/logging');
 
 /**
  * Adds a new device to the system
@@ -15,30 +16,9 @@ const createDevice = async (name, mac_address, owner, description) => {
     try{
 
         /* Validate the passed in arguments */
-
-        if(typeof name !== 'string' || name === '' || name === undefined || name === null){
-            return {
-                "status": "fail",
-                "message": "Device name is missing or incorrect",
-                "data": []
-            }
-        }
-
-        if(typeof mac_address !== 'string' || mac_address === '' || mac_address === undefined || mac_address === null){
-            return {
-                "status": "fail",
-                "message": "Device MAC Address is missing or incorrect",
-                "data": []
-            }
-        }
-
-        if(typeof owner !== 'number' || owner === '' || owner === undefined || owner === null){
-            return {
-                "status": "fail",
-                "message": "Device owner is missing or incorrect",
-                "data": []
-            }
-        }
+        validator(name).isDefined().isString().minLen(1);
+        validator(mac_address).isDefined().isString().minLen(1);
+        validator(owner).isDefined().isNumber();
 
         /* Create the sql statement needed to add the new device */
         const sqlStmt = `INSERT INTO devices (name, mac_address, owner, description) VALUES($1, $2, $3, $4, $5);`
@@ -54,6 +34,7 @@ const createDevice = async (name, mac_address, owner, description) => {
         const chkRes = await db.query(chkStmt, chkValues);
 
         if(chkRes && chkRes?.rows?.length > 0){
+            logger.log('warn', "Device Service: Device already exists");
             return {
                 "status": "fail",
                 "message": "Device already exists",
@@ -65,6 +46,7 @@ const createDevice = async (name, mac_address, owner, description) => {
         const result = await db.query(sqlStmt, stmtValues);
 
         if (!result || result?.rows?.length < 0){
+            logger.log('error', "Device Service: Unable to create device");
             return {
                 "status": "fail",
                 "message": "Unable to create new device",
@@ -79,10 +61,10 @@ const createDevice = async (name, mac_address, owner, description) => {
         }
 
     } catch(err) {
-
+        logger.log('error', "Device Service: " + error.message);
         return {
             "status": "fail",
-            "message": "Unable to create new device",
+            "message": error.message,
             "data": []
         }
 
@@ -111,6 +93,7 @@ const findDevices = async() => {
                 "data": results.rows
             }
         } else {
+            logger.log('info', "Device Service: No devices found");
             return {
                 "state": "ok",
                 "message": "No records found",
@@ -119,7 +102,7 @@ const findDevices = async() => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Device Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -149,6 +132,7 @@ const findDevice = async (id) => {
 
         /* Check the results have been sent back ok */
         if(!results){
+            logger.log('error', "Device Service: Problem finding requested device");
             return {
                 "state": "fail",
                 "message": "Problem accessing the records from the DB",
@@ -157,6 +141,7 @@ const findDevice = async (id) => {
         } else {
 
             if(results?.rows?.length === 0){
+                logger.log('info', "Device Service: No device found matching id provided");
                 return {
                     "state": "ok",
                     "message": "No device found matching provided id",
@@ -172,7 +157,7 @@ const findDevice = async (id) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Device Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -206,6 +191,7 @@ const updateDevice = async (id, column, value) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.state === "fail"){
+            logger.log('error', "Device Service: Unable to update the specified device");
             return {
                 "state": "fail",
                 "message": "Unable to update the specified device",
@@ -223,7 +209,7 @@ const updateDevice = async (id, column, value) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Device Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -252,6 +238,7 @@ const removeDevice = async id => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "Device Service: Unable to find a device to be removed");
             return {
                 "state": "fail",
                 "message": "Unable to find device to be removed",
@@ -268,7 +255,7 @@ const removeDevice = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Device Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,

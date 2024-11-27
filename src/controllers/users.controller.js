@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const validator = require('../utils/validation');
 const service = require('../services/user.service');
+const {logger} = require('../config/logging');
 
 /**
  * Gathers a list of users
@@ -16,6 +17,7 @@ const findUsers = async (req, res) => {
 
         /* Check the service worked and we have records to send back */
         if(!result){
+            logger.log('error', 'Users controller: Problem retrieving list of users');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -25,6 +27,7 @@ const findUsers = async (req, res) => {
         } else {
 
             if(result?.data?.length <=0 ){
+                logger.log('warn', 'Users controller: No users found');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -43,7 +46,7 @@ const findUsers = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Users controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -74,6 +77,8 @@ const findUser = async (req, res) => {
 
         /* Check the service worked and we have records to send back */
         if(!result){
+            logger.log('error', 'Users controller: Problem retrieving specified user');
+
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -83,6 +88,7 @@ const findUser = async (req, res) => {
         } else {
 
             if(result?.data?.length <=0 ){
+                logger.log('error', 'Users controller: Unable to find specified user with matching id');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -101,7 +107,7 @@ const findUser = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Users controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -135,6 +141,7 @@ const updateUser = async (req, res) => {
 
         /* check the results sent back and ensure the user was updated */
         if(!result || result?.data?.length <= 0){
+            logger.log('error', 'Users controller: Problem updating the specified user');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -151,7 +158,7 @@ const updateUser = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Users controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -182,6 +189,7 @@ const removeUser = async (req, res) => {
 
         /* check the results sent back and ensure the user was updated */
         if(!result || result?.data?.length <= 0){
+            logger.log('error', 'Users controller: Problem removing the user');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -198,7 +206,7 @@ const removeUser = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Users controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",

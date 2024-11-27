@@ -2,6 +2,7 @@
 const validator = require('../utils/validation');
 const bc = require('bcrypt');
 const userService = require('./user.service');
+const {logger} = require('../config/logging');
 
 /**
  * Login a user
@@ -20,6 +21,7 @@ const login = async (username, password) => {
         const user = await userService.findByEmail(username);
 
         if(!user || user?.data?.length <= 0) {
+            logger.log('warn', "Auth Service: No matching user found");
             return {
                 "state": "fail",
                 "message": "No matching user found",
@@ -27,10 +29,11 @@ const login = async (username, password) => {
             }
         } else {
 
-            /* Check the passwords macth */
+            /* Check the passwords match */
             const matched = await bc.compare(password, user?.data[0]?.password);
 
             if(!matched){
+                logger.log('warn', "Auth Service: password mismatch");
                 return {
                     "state": "fail",
                     "message": "The provided password is incorrect",
@@ -39,6 +42,7 @@ const login = async (username, password) => {
             } else {
 
                 /* we have successfully logged in */
+                logger.log('info', "Auth Service: login successful");
                 return {
                     "state": "ok",
                     "message": "Logged in successfully",
@@ -50,7 +54,7 @@ const login = async (username, password) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Auth Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,

@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const db = require('../database/db');
 const validator = require('../utils/validation');
+const {logger} = require('../config/logging');
 
 /**
  * Get a list of components
@@ -16,6 +17,7 @@ const findComponents = async () => {
         const results = await db.query(sqlStmt);
 
         if(!results || results?.rows?.length <= 0){
+            logger.log('error', "Component Service: Unable to get component list");
             return {
                 "state": "fail",
                 "message": "Unable to get list of components",
@@ -30,7 +32,7 @@ const findComponents = async () => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Component Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -61,6 +63,7 @@ const findComponent = async id => {
         const results = await db.query(sqlStmt, sqlValues);
 
         if(!results || results?.rows?.length <= 0){
+            logger.log('error', "Component Service: Unable to find specific component");
             return {
                 "state": "fail",
                 "message": "Unable to get find specified component",
@@ -75,7 +78,7 @@ const findComponent = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Component Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -115,6 +118,7 @@ const createComponent = async (name, description, owner, device_id) => {
         const result = await db.query(sqlStmt, sqlValues);
     
         if(!result){
+            logger.log('error', "Component Service: Unable to add component");
             return {
                 "state": "fail",
                 "message": "Unable to add component",
@@ -130,7 +134,7 @@ const createComponent = async (name, description, owner, device_id) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Component Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -164,6 +168,7 @@ const updateComponent = async (id, column, value) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result){
+            logger.log('error', "Component Service: Unable to update component");
             return {
                 "state": "fail",
                 "message": "Unable to update component",
@@ -178,7 +183,7 @@ const updateComponent = async (id, column, value) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Component Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -207,6 +212,7 @@ const deleteComponent = async id => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result){
+            logger.log('error', "Component Service: Unable to remove component");
             return {
                 "state": "fail",
                 "message": "Unable to remove component",
@@ -221,7 +227,7 @@ const deleteComponent = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Component Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,

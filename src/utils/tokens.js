@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
 const config = require('../config/config');
 const validator = require('../utils/validation');
+const {logger} = require("../config/logging");
 
 /**
  * Creates a new set of access tokens 
@@ -28,7 +29,7 @@ const generateTokens = async payload => {
         return { accessToken, refreshToken }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Tokens util: ' + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -53,7 +54,7 @@ const verifyAccessToken = async token => {
         return await jwt.verify(token, config.JWT_SECRET_TOKEN);
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Tokens util: ' + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -78,7 +79,7 @@ const verifyRefreshToken = async token => {
         return await jwt.verify(token, config.JWT_SECRET_REFRESH);
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Tokens util: ' + error.message);
         return {
             "state": "fail",
             "message": error.message,

@@ -3,6 +3,7 @@ const db = require('../database/db');
 const validator = require('../utils/validation');
 const config = require('../config/config');
 const bc = require('bcrypt');
+const {logger} = require('../config/logging');
 
 /**
  * Finds a user by id
@@ -23,6 +24,7 @@ const findById = async id => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('warn', "User Service: User not found");
             return {
                 "state": "fail",
                 "message": "User not found",
@@ -37,7 +39,7 @@ const findById = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "User Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -66,6 +68,7 @@ const findByEmail = async email => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "User Service: User not found");
             return {
                 "state": "fail",
                 "message": "User not found",
@@ -80,7 +83,7 @@ const findByEmail = async email => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "User Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -106,6 +109,7 @@ const findUsers = async () => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "User Service: No users found");
             return {
                 "state": "fail",
                 "message": "User not found",
@@ -120,7 +124,7 @@ const findUsers = async () => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "User Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -167,6 +171,7 @@ const createUser = async (email, password, display_name) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "User Service: Unable to create new user");
             return {
                 "state": "fail",
                 "message": "Unable to create user",
@@ -181,7 +186,7 @@ const createUser = async (email, password, display_name) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "User Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -216,6 +221,7 @@ const updateUser = async (id, column, value) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result){
+            logger.log('error', "User Service: Unable to update user");
             return {
                 "state": "fail",
                 "message": "Unable to update user",
@@ -223,6 +229,7 @@ const updateUser = async (id, column, value) => {
             }
         } else {
             if(result?.rows?.length <= 0){
+                logger.log('warn', "User Service: No user found to update");
                 return {
                     "state": "fail",
                     "message": "No user found",
@@ -238,7 +245,7 @@ const updateUser = async (id, column, value) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "User Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -267,6 +274,7 @@ const removeUser = async id => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "User Service: Unable to remove user");
             return {
                 "state": "fail",
                 "message": "Unable to remove user",
@@ -281,7 +289,7 @@ const removeUser = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "User Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,

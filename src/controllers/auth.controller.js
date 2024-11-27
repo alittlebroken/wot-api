@@ -6,6 +6,7 @@ const security = require('../utils/tokens');
 const refreshTokenService = require('../services/refreshtokens.service');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
+const {logger} = require('../config/logging');
 
 /**
  * Allows the user to login and get a JWT token to authenticate further requests
@@ -27,6 +28,7 @@ const login = async (req, res) => {
         const result = await service.login(email, password);
 
         if(!result || result?.length <= 0 || result?.state == "fail"){
+            logger.log('error', 'Auth controller: Unable to login');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -59,6 +61,7 @@ const login = async (req, res) => {
             const result = await refreshTokenService.removeTokenByOwner(tokenExists?.data[0].owner);
             
             if(!result){
+                logger.log('error', 'Auth controller: Unable to login whilst removing existing refresh token');
                 return res.status(500).json({
                     "status": 500,
                     "state": "fail",
@@ -70,6 +73,7 @@ const login = async (req, res) => {
                 const newToken = await refreshTokenService.createToken(payload.id, refreshToken);
                 
                 if(!newToken){
+                    logger.log('error', 'Auth controller: Unable to login whilst storing new refresh token');
                     return res.status(500).json({
                         "status": 500,
                         "state": "fail",
@@ -84,6 +88,7 @@ const login = async (req, res) => {
                 const newToken = await refreshTokenService.createToken(payload.id, refreshToken);
                 
                 if(!newToken){
+                    logger.log('error', 'Auth controller: Unable to login whilst trying to add a new refresh token');
                     return res.status(500).json({
                         "status": 500,
                         "state": "fail",
@@ -104,7 +109,7 @@ const login = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Auth controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -136,6 +141,7 @@ const registerUser = async (req, res) => {
         const result = await userService.createUser(email, password, display_name);
 
         if(!result || result?.state === "fail"){
+            logger.log('error', 'Auth controller: Registration failed');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -152,7 +158,7 @@ const registerUser = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Auth controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -174,6 +180,7 @@ const logout = async (req, res) => {
 
         /* Check that we have a refresh token and it is valid */
         if(!req.cookies || !req.cookies.refreshToken) {
+            logger.log('error', 'Auth controller: No valid refresh token found');
             return res.status(404).json({
                 "status": 404,
                 "state": "fail",
@@ -197,6 +204,7 @@ const logout = async (req, res) => {
 
                 if(!removedToken){
                     /* Something has gone wrong whilst logging the user out and removing the refresh key */
+                    logger.log('error', 'Auth controller: Unable to logout the user');
                     return res.status(500).json({
                         "status": 500,
                         "state": "fail",
@@ -221,6 +229,7 @@ const logout = async (req, res) => {
 
 
         } else {
+            logger.log('error', 'Auth controller: Invalid refresh token supplied');
             res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -230,7 +239,7 @@ const logout = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Auth controller: ' + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -251,12 +260,14 @@ const refresh = async (req, res) => {
 
         /* Ensure that we have a valid refresh token */
         if(!req.cookies || !req.cookies.refreshToken){
+            logger.log('error', 'Auth controller: Unauthorised access. No valid refresh token supplied');
             return res.status(401).send("Unauthorised access. Please login.");
         } else {
 
             /* Verify the passed in refresh token */
             const refreshToken = await jwt.verify(req.cookies.refreshToken, config.JWT_SECRET_REFRESH);
             if(!refreshToken){
+                logger.log('error', 'Auth controller: Unable to refresh access token');
                 return res.status(401).send("Problem verifying refresh token. Please login.");
             } else {
 
@@ -282,7 +293,7 @@ const refresh = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Auth controller: ' + error.message);
         return {
             "state": "fail",
             "message": error.message,

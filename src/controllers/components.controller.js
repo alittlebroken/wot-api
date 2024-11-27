@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const validator = require('../utils/validation');
 const service = require('../services/component.service');
+const {logger} = require('../config/logging');
 
 /**
  * Gets a list of all components in the system
@@ -15,6 +16,7 @@ const getComponents = async (req, res) => {
         const result = await service.findComponents();
 
         if(!result){
+            logger.log('error', 'Components controller: Problem retrieving list of components');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -24,6 +26,7 @@ const getComponents = async (req, res) => {
         } else {
 
             if(result?.data?.length <=0){
+                logger.log('warn', 'Components controller: No components to retrieve');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -41,7 +44,7 @@ const getComponents = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Components controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -72,6 +75,7 @@ const getComponent = async (req, res) => {
 
         /* Check the result is ok */
         if(!result){
+            logger.log('error', 'Components controller: Problem retrieving specified component');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -81,6 +85,7 @@ const getComponent = async (req, res) => {
         } else {
 
             if(result?.data?.length <= 0){
+                logger.log('warn', 'Components controller: No component found matching passed in id');
                 return res.status(204).json({
                     "status": 204,
                     "state": "ok",
@@ -98,7 +103,7 @@ const getComponent = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Components controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -132,6 +137,7 @@ const createComponent = async (req,res) => {
         const result = await service.createComponent(name, description, owner, device_id);
 
         if(!result || result?.data?.length <= 0){
+            logger.log('error', 'Components controller: Problem creating component');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -148,7 +154,7 @@ const createComponent = async (req,res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Components controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -182,6 +188,7 @@ const updateComponent = async (req, res) => {
         const result = await service.updateComponent(id, column, value);
 
         if(!result || result?.data?.length <= 0){
+            logger.log('error', 'Components controller: Problem updating component');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -198,7 +205,7 @@ const updateComponent = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Components controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
@@ -228,6 +235,7 @@ const removeComponent = async (req, res) => {
         const result = await service.deleteComponent(id);
 
         if(!result){
+            logger.log('error', 'Components controller: Problem removing component');
             return res.status(400).json({
                 "status": 400,
                 "state": "fail",
@@ -244,7 +252,7 @@ const removeComponent = async (req, res) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Components controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
             "state": "fail",
