@@ -22,6 +22,13 @@ const JWT_DEFAULT_EXPIRY = process.env.JWT_DEFAULT_EXPIRY;
 const JWT_SECRET_REFRESH = process.env.JWT_SECRET_REFRESH;
 const JWT_DEFAULT_EXPIRY_REFRESH = process.env.JWT_DEFAULT_EXPIRY_REFRESH;
 
+/* Logging settings */
+const LOG_DIR = process.env.LOG_DIR;
+const LOG_HTTP = process.env.LOG_HTTP;
+const LOG_APP = process.env.LOG_APP;
+const LOG_ERROR = process.env.LOG_ERROR;
+const LOG_ROTATION = process.env.LOG_ROTATION;
+
 module.exports = {
     APP_PORT,
     NODE_ENV,
@@ -35,5 +42,10 @@ module.exports = {
     JWT_SECRET_TOKEN,
     JWT_DEFAULT_EXPIRY,
     JWT_SECRET_REFRESH,
-    JWT_DEFAULT_EXPIRY_REFRESH
+    JWT_DEFAULT_EXPIRY_REFRESH,
+    LOG_DIR,
+    LOG_HTTP,
+    LOG_APP,
+    LOG_ERROR,
+    LOG_ROTATION
 }
