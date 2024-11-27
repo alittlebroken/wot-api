@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const db = require('../database/db');
 const validator = require('../utils/validation');
+const {logger} = require('../config/logging');
 
 /**
  * Gets a list of all refresh tokens
@@ -17,6 +18,7 @@ const findTokens = async () => {
         const results = await db.query(sqlStmt, sqlValues);
 
         if(!results) {
+            logger.log('error', "Refresh Token Service: Unable to get list of tokens");
             return {
                 "state": "fail",
                 "message": "Unable to retrieve list of tokens",
@@ -25,6 +27,7 @@ const findTokens = async () => {
         } else {
 
             if(!results?.rows?.length <= 0 ){
+                logger.log('warn', "Refresh Token Service: No tokens found");
                 return {
                     "state": "fail",
                     "message": "No tokens found",
@@ -41,7 +44,7 @@ const findTokens = async () => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Refresh Token Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -70,6 +73,7 @@ const findToken = async id => {
         const results = await db.query(sqlStmt, sqlValues);
         
         if(!results.rows) {
+            logger.log('error', "Refresh Token Service: Problem trying to retrieve token");
             return {
                 "state": "fail",
                 "message": "Unable to retrieve token",
@@ -78,6 +82,7 @@ const findToken = async id => {
         } else {
 
             if(results?.rows?.length <= 0 ){
+                logger.log('warn', "Refresh Token Service: No token found matching passed in id");
                 return {
                     "state": "fail",
                     "message": "No token found",
@@ -94,7 +99,7 @@ const findToken = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Refresh Token Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -124,6 +129,7 @@ const createToken = async (owner, token) => {
         let check = await db.query(sqlStmt, sqlValues);
 
         if(!check){
+            logger.log('error', "Refresh Token Service: Problem checking for existing token");
             return {
                 "state": "fail",
                 "message": "Problem whilst checking for existing token",
@@ -131,6 +137,7 @@ const createToken = async (owner, token) => {
             }
         } else {
             if(check?.rows?.length >= 1) {
+                logger.log('warn', "Refresh Token Service: New token already in use");
                 return {
                     "state": "fail",
                     "message": "Token already in use",
@@ -144,6 +151,7 @@ const createToken = async (owner, token) => {
                 let result = await db.query(sqlStmt, sqlValues);
 
                 if(!result || result?.rows?.length <= 0){
+                    logger.log('error', "Refresh Token Service: Problem attempting to save token");
                     return {
                         "state": "fail",
                         "message": "Problem whilst saving token",
@@ -162,7 +170,7 @@ const createToken = async (owner, token) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Refresh Token Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -195,6 +203,7 @@ const updateToken = async (id, column, value) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result){
+            logger.log('error', "Refresh Token Service: Problem updating stored token");
             return {
                 "state": "fail",
                 "message": "Problem updating stored token",
@@ -202,6 +211,7 @@ const updateToken = async (id, column, value) => {
             }
         } else {
             if(result?.rows?.length <= 0){
+                logger.log('error', "Refresh Token Service: No token found to update");
                 return {
                     "state": "fail",
                     "message": "No token found to update",
@@ -217,7 +227,7 @@ const updateToken = async (id, column, value) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Refresh Token Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -246,6 +256,7 @@ const removeToken = async id => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result){
+            logger.log('error', "Refresh Token Service: Problme trying to remove token");
             return {
                 "state": "fail",
                 "message": "Problem whilst removing token",
@@ -254,6 +265,7 @@ const removeToken = async id => {
         } else {
 
             if(result?.rows?.length <= 0){
+                logger.log('error', "Refresh Token Service: No token found to be removed");
                 return {
                     "state": "fail",
                     "message": "no token found to be removed",
@@ -270,7 +282,7 @@ const removeToken = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Refresh Token Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -299,6 +311,7 @@ const removeTokenByOwner = async owner => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result){
+            logger.log('error', "Refresh Token Service: Problem whilst trying to remove token");
             return {
                 "state": "fail",
                 "message": "Problem whilst removing token",
@@ -307,6 +320,7 @@ const removeTokenByOwner = async owner => {
         } else {
 
             if(result?.rows?.length <= 0){
+                logger.log('error', "Refresh Token Service: No token found to be removed");
                 return {
                     "state": "fail",
                     "message": "no token found to be removed",
@@ -323,7 +337,7 @@ const removeTokenByOwner = async owner => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Refresh Token Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,

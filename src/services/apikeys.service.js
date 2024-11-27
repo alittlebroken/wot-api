@@ -3,6 +3,7 @@ const db = require('../database/db');
 const validator = require('../utils/validation');
 const config = require('../config/config');
 const { generateApiKey } = require('generate-api-key');
+const {logger} = require('../config/logging');
 
 /**
  * List all API keys
@@ -20,6 +21,7 @@ const findApiKeys = async () => {
 
         /* Check the query ran ok */
         if(!result){
+            logger.log('error', "Api Keys Services: Problem retrieving keys");
             return {
                 "state": "fail",
                 "message": "Problem retrieving keys",
@@ -28,6 +30,7 @@ const findApiKeys = async () => {
         } else {
 
             if(result?.rows?.length <= 0){
+                logger.log('warn', "Api Keys Services: No keys found");
                 return {
                     "state": "fail",
                     "message": "No keys found",
@@ -44,6 +47,7 @@ const findApiKeys = async () => {
 
 
     } catch(error) {
+        logger.log('error', "Api Keys Services: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -73,6 +77,7 @@ const findApiKey = async id => {
 
         /* Check the query ran ok */
         if(!result){
+            logger.log('error', "Api Keys Services: Problem retrieving key");
             return {
                 "state": "fail",
                 "message": "Problem retrieving key",
@@ -81,6 +86,7 @@ const findApiKey = async id => {
         } else {
 
             if(result?.rows?.length <= 0){
+                logger.log('warn', "Api Keys Services: No key found");
                 return {
                     "state": "fail",
                     "message": "No key found",
@@ -96,6 +102,7 @@ const findApiKey = async id => {
         }
 
     } catch(error) {
+        logger.log('error', "Api Keys Services: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -130,6 +137,7 @@ const createApiKey = async (owner, device_id) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "Api Keys Services: Unable to create key");
             return {
                 "state": "fail",
                 "message": "Problem generating new api key",
@@ -144,6 +152,7 @@ const createApiKey = async (owner, device_id) => {
         }
 
     } catch(error) {
+        logger.log('error', "Api Keys Services: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -175,6 +184,7 @@ const updateApiKey = async (id, column, value) => {
         /* Execute the sql statement and check the result of it running */
         const result = await db.query(sqlStmt, sqlValues);
         if(!result){
+            logger.log('error', "Api Keys Services: Unable to update api key");
             return {
                 "state": "fail",
                 "message": "Unable to update api key",
@@ -183,6 +193,7 @@ const updateApiKey = async (id, column, value) => {
         } else {
 
             if(result?.rows?.length <= 0){
+                logger.log('warn', "Api Keys Services: No key found to update");
                 return {
                     "state": "fail",
                     "message": "No key found to update",
@@ -199,6 +210,7 @@ const updateApiKey = async (id, column, value) => {
         }
 
     } catch(error) {
+        logger.log('error', "Api Keys Services: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -226,6 +238,7 @@ const removeKey = async id => {
         /* Exeucte the prepared statement and check the result sent back by the db */
         const result = await db.query(sqlStmt, sqlValues);
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "Api Keys Services: Problem removing key");
             return {
                 "state": "fail",
                 "message": "Problem removing api key",
@@ -240,6 +253,7 @@ const removeKey = async id => {
         }
 
     } catch(error) {
+        logger.log('error', "Api Keys Services: " + error.message);
         return {
             "state": "fail",
             "message": error.message,

@@ -1,6 +1,7 @@
 /* Import supporting libraries and files */
 const db = require('../database/db');
 const validator = require('../utils/validation');
+const {logger} = require('../config/logging');
 
 /**
  * Gets a list of measurements
@@ -17,6 +18,7 @@ const findMeasurements = async () => {
         const results = await db.query(sqlStmt, sqlValues);
 
         if(!results){
+            logger.log('error', "Measurement Service: Problem retieving list of measurements");
             return {
                 "state": "fail",
                 "message": "Unable to get measurements",
@@ -24,6 +26,7 @@ const findMeasurements = async () => {
             }
         } else {
             if(results?.rows?.length <=0){
+                logger.log('warn', "Measurement Service: No measurements found");
                 return {
                     "state": "ok",
                     "message": "Currently no measurements",
@@ -39,7 +42,7 @@ const findMeasurements = async () => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Measurement Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -67,6 +70,7 @@ const findMeasurement = async id => {
 
     /* Check the result back from the DB and process it accordingly */
     if(!results){
+        logger.log('error', "Measurement Service: Problem trying to retrieve the specified measurement");
         return {
             "state": "fail",
             "message": "Unable to retieve the specified measurement",
@@ -74,6 +78,7 @@ const findMeasurement = async id => {
         }
     } else {
         if(results?.rows?.length <=0){
+            logger.log('warn', "Measurement Service: No measurement found matching supplied id");
             return {
                 "state": "ok",
                 "message": "Unable to find the specified measurement",
@@ -117,6 +122,7 @@ const createMeasurement = async (device_id, component_id, value, logged) => {
 
         /* Check to ensure the operation was a success */
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "Measurement Service: Problem adding measurement");
             return {
                 "state": "fail",
                 "message": "Unable to add measurement",
@@ -131,7 +137,7 @@ const createMeasurement = async (device_id, component_id, value, logged) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Measurement Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -163,6 +169,7 @@ const updateMeasurement = async (id, column, value) => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "Measurement Service: Unable to update specified measurement");
             return {
                 "state": "fail",
                 "message": "Unable to update specified measurement",
@@ -177,7 +184,7 @@ const updateMeasurement = async (id, column, value) => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Measurement Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
@@ -207,6 +214,7 @@ const removeMeasurement = async id => {
         const result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', "Measurement Service: Unable to remove measurement");
             return {
                 "state": "fail",
                 "message": "Unable to remove measurement",
@@ -221,7 +229,7 @@ const removeMeasurement = async id => {
         }
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', "Measurement Service: " + error.message);
         return {
             "state": "fail",
             "message": error.message,
