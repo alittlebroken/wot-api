@@ -2,6 +2,7 @@
 const db = require('../database/db');
 const validator = require('../utils/validation');
 
+
 /**
  * Adds a new device to the system
  * @param {String} name - The name of the device
@@ -15,30 +16,9 @@ const createDevice = async (name, mac_address, owner, description) => {
     try{
 
         /* Validate the passed in arguments */
-
-        if(typeof name !== 'string' || name === '' || name === undefined || name === null){
-            return {
-                "status": "fail",
-                "message": "Device name is missing or incorrect",
-                "data": []
-            }
-        }
-
-        if(typeof mac_address !== 'string' || mac_address === '' || mac_address === undefined || mac_address === null){
-            return {
-                "status": "fail",
-                "message": "Device MAC Address is missing or incorrect",
-                "data": []
-            }
-        }
-
-        if(typeof owner !== 'number' || owner === '' || owner === undefined || owner === null){
-            return {
-                "status": "fail",
-                "message": "Device owner is missing or incorrect",
-                "data": []
-            }
-        }
+        validator(name).isDefined().isString().minLen(1);
+        validator(mac_address).isDefined().isString().minLen(1);
+        validator(owner).isDefined().isNumber();
 
         /* Create the sql statement needed to add the new device */
         const sqlStmt = `INSERT INTO devices (name, mac_address, owner, description) VALUES($1, $2, $3, $4, $5);`
