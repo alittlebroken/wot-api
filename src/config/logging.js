@@ -28,7 +28,6 @@ const logger = winston.createLogger({
     ),
     defaultMeta: { service: 'wot-api'},
     transports: [
-        new winston.transports.File({ filename: path.join(rootDir, config.LOG_DIR, config.LOG_ERROR), level: 'error'}),
         new winston.transports.File({ filename: path.join(rootDir, config.LOG_DIR, config.LOG_APP)})
     ]
 })

@@ -26,7 +26,6 @@ const JWT_DEFAULT_EXPIRY_REFRESH = process.env.JWT_DEFAULT_EXPIRY_REFRESH;
 const LOG_DIR = process.env.LOG_DIR;
 const LOG_HTTP = process.env.LOG_HTTP;
 const LOG_APP = process.env.LOG_APP;
-const LOG_ERROR = process.env.LOG_ERROR;
 const LOG_ROTATION = process.env.LOG_ROTATION;
 
 module.exports = {
@@ -46,6 +45,5 @@ module.exports = {
     LOG_DIR,
     LOG_HTTP,
     LOG_APP,
-    LOG_ERROR,
     LOG_ROTATION
 }
