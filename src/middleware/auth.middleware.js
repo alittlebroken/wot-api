@@ -3,6 +3,8 @@ const validator = require('../utils/validation');
 const jwt = require('jsonwebtoken');
 const config = require('../config/config');
 const db = require('../database/db');
+const {logger} = require('../config/logging');
+
 
 /**
  * Checks if a user is authenticated and if they are then
@@ -19,6 +21,7 @@ const isAuthenticated = async (req, res, done) => {
         const auth = req.get('Authorisation');
 
         if(!auth){
+            logger.log('error', 'Auth middleware: Missing Authorisation header');
             return res.status(401).json({
                 "status": 401,
                 "state": "fail",
@@ -32,6 +35,7 @@ const isAuthenticated = async (req, res, done) => {
 
             /* Check if we have a bearer token */
             if(!auth_split[0] === "Bearer" || auth_split[1].length <= 0){
+                logger.log('error', 'Auth middleware: No Bearer provided in authorisation header');
                 return res.status(401).json({
                     "status": 401,
                     "state": "fail",
@@ -43,6 +47,7 @@ const isAuthenticated = async (req, res, done) => {
                 const token = await jwt.verify(auth_split[1], config.JWT_SECRET_TOKEN);
 
                 if(!token){
+                    logger.log('error', 'Auth middleware: Invalid access token supplied');
                     return res.status(401).json({
                         "status": 401,
                         "state": "fail",
@@ -53,6 +58,7 @@ const isAuthenticated = async (req, res, done) => {
                     /* Token is valid, decode and add to the request object */
                     const decoded_token = await jwt.decode(auth_split[1]);
                     if(!decoded_token){
+                        logger.log('error', 'Auth middleware: Problem decoding access token');
                         return res.status(401).json({
                             "status": 401,
                             "state": "fail",
@@ -78,7 +84,7 @@ const isAuthenticated = async (req, res, done) => {
 
 
     } catch(error) {
-        console.log(error);
+        logger.log('error', 'Auth middleware: ' + error.message);
 
         /* Check if the token has exopired at all */
         if(error.message === "jwt expired"){
@@ -115,6 +121,7 @@ const isValidDevice = async (req, res, done) => {
         validator(api_key).isDefined().isString().minLen(1);
 
         if(!api_key){
+            logger.log('error', 'Auth middleware:  Missing x-api-key header');
             return res.status(403).json({
                 "status": 403,
                 "state": "fail",
@@ -129,7 +136,7 @@ const isValidDevice = async (req, res, done) => {
 
 
         /* Perform some checks to ensure the device is registered in
-           the system and has been assigned a valid ap key */
+           the system and has been assigned a valid api key */
         let sqlStmt = `
             SELECT d.id, d.mac_address FROM devices d INNER JOIN keys k ON d.id = k.device_id WHERE d.mac_address = $1; 
         `;
@@ -139,6 +146,7 @@ const isValidDevice = async (req, res, done) => {
         let result = await db.query(sqlStmt, sqlValues);
 
         if(!result || result?.rows?.length <= 0){
+            logger.log('error', 'Auth middleware: Device is not registered');
             return res.status(403).json({
                 "status": 403,
                 "state": "fail",
@@ -151,7 +159,7 @@ const isValidDevice = async (req, res, done) => {
 
     } catch(error) {
 
-        console.log(error);
+        logger.log('error', 'Auth middleware: ' + error.message);
 
         return res.status(403).json({
             "status": 403,
