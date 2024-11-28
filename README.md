@@ -103,8 +103,8 @@ You will find below links to readme files on how to get the application up and r
 <!--- 
 * [Docker containers](./docs/DOCKERINSTALL.md)
 * [Docker Dev Environment](./docs/DOCDKERDEVINSTALL.md)
+-->
 
 ## Documentation
 
 * [API Routes](./docs/ROUTES.md)
---->
