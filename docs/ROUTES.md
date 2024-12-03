@@ -26,6 +26,12 @@ Provides mechanisms for a user to login, logout and register themselves with the
 
 Manage components to be usede with a device
 
+* [GET /api/v1/components/](./API/COMPONENTS/LISTALL.md)
+* [GET /api/v1/components/:id](./API/COMPONENTS/LISTONE.md)
+* [POST /api/v1/components/](./API/COMPONENTS/CREATE.md)
+* [PUT /api/v1/components/:id](./API/COMPONENTS/UPDATE.md)
+* [DELETE /api/v1/components/:id](./API/COMPONENTS/REMOVE.md)
+
 ## Devices
 
 Manage devices
