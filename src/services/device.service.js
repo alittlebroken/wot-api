@@ -60,7 +60,7 @@ const createDevice = async (name, mac_address, owner, description) => {
             "data": result.rows
         }
 
-    } catch(err) {
+    } catch(error) {
         logger.log('error', "Device Service: " + error.message);
         return {
             "status": "fail",
