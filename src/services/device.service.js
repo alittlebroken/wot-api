@@ -21,7 +21,7 @@ const createDevice = async (name, mac_address, owner, description) => {
         validator(owner).isDefined().isNumber();
 
         /* Create the sql statement needed to add the new device */
-        const sqlStmt = `INSERT INTO devices (name, mac_address, owner, description) VALUES($1, $2, $3, $4, $5);`
+        const sqlStmt = `INSERT INTO devices (name, mac_address, owner, description) VALUES($1, $2, $3, $4);`
 
         /* Values being added */
         const stmtValues = [name, mac_address, owner, description];
