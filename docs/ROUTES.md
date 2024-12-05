@@ -46,6 +46,12 @@ Manage devices
 
 Manage measurements that devices and components produce
 
+* [GET /api/v1/measurements/](./API/MEASUREMENTS/LISTALL.md)
+* [GET /api/v1/measurements/:id](./API/MEASUREMENTS/LISTONE.md)
+* [POST /api/v1/measurements/](./API/MEASUREMENTS/CREATE.md)
+* [PUT /api/v1/measurements/:id](./API/MEASUREMENTS/UPDATED.md)
+* [DELETE /api/v1/measurements/:id](./API/MEASUREMENTS/REMOVE.md)
+
 ## Refresh Tokens
 
 Manage refresh tokens for users
