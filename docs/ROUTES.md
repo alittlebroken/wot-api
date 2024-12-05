@@ -56,6 +56,8 @@ Manage measurements that devices and components produce
 
 Manage refresh tokens for users
 
+* [POST /api/v1/tokens/refresh](./API/TOKENS/REFRESH.md)
+
 ## Users
 
 Manage the users of the system
