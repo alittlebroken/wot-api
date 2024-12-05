@@ -52,7 +52,7 @@ const refreshToken = async (req, res) => {
         } else {
             logger.log('error', 'Refresh Token controller: Unable to generate a new access token');
             return res.status(500).json({
-                "status": 400,
+                "status": 500,
                 "state": "fail",
                 "message": "Unable to generate new access token",
                 "data": []
