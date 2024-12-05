@@ -36,6 +36,12 @@ Manage components to be usede with a device
 
 Manage devices
 
+* [GET /api/v1/devices/](./API/DEVICES/LISTALL.md)
+* [GET /api/v1/devices/:id](./API/DEVICES/LISTONE.md)
+* [POST /api/v1/devices/](./API/DEVICES/CREATE.md)
+* [PUT /api/v1/devices/:id](./API/DEVICES/UPDATED.md)
+* [DELETE /api/v1/devices/:id](./API/DEVICES/REMOVE.md)
+
 ## Measurements
 
 Manage measurements that devices and components produce
