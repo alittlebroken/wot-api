@@ -9,9 +9,7 @@ POST /api/v1/tokens/refresh
 
 Supported attributes:
 
-| Attribute                | Type     | Description           |
-|--------------------------|----------|-----------------------|
-| `id`            | number | The ID of the measurement being removed. |
+`none`
 
 
 If successful, returns [`200`] and response attributes:
