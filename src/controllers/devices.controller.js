@@ -268,7 +268,7 @@ const removeDevice = async (req, res) => {
             if(result?.rows?.length <= 0){
                 logger.log('warn', 'Device controller: Unable to remove device matching passed in id');
                 return res.status(404).json({
-                    "status": 494,
+                    "status": 404,
                     "state": "fail",
                     "message": "No device found to delete"
                 });
