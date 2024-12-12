@@ -129,12 +129,13 @@ const updateUser = async (req, res) => {
     try{
 
         /* Extract the request parameters */
-        const { id } = parseInt(req.params.id);
-        const { column, value } = req.body;
+        const id = parseInt(req.params.id);
+        const column = req.body.column;
+        const value = req.body.value;
 
         /* Perform validation */
         validator(id).isDefined().isNumber();
-        validator(column).isDefined().isString().minLen();
+        validator(column).isDefined().isString().minLen(3);
         validator(value).isDefined();
 
         /* Call the appropriate service */
