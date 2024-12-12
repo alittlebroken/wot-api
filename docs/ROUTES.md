@@ -61,3 +61,8 @@ Manage refresh tokens for users
 ## Users
 
 Manage the users of the system
+
+* [GET /api/v1/users/](./API/USERS/LISTALL.md)
+* [GET /api/v1/users/:id](./API/USERS/LISTONE.md)
+* [PUT /api/v1/users/:id](./API/USERS/UPDATED.md)
+* [DELETE /api/v1/users/:id](./API/USERS/REMOVE.md)
