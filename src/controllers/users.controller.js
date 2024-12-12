@@ -181,7 +181,7 @@ const removeUser = async (req, res) => {
     try{
 
         /* Extract the request parameters */
-        const { id } = parseInt(req.params.id);
+        const id = parseInt(req.params.id);
 
         /* Perform validation */
         validator(id).isDefined().isNumber();
