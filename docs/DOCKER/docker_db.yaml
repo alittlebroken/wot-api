@@ -1,3 +1,6 @@
+# Set the project name
+name: WebOfThings
+
 services:
   db:
     container_name: wot_db
