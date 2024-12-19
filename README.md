@@ -21,15 +21,6 @@ The below is the software used to develop this application and it's highly recom
 You will find below links to readme files on how to get the application up and running on various other platforms or environments
 * [Local deploy with Docker](./docs/DOCKER.md)
 
-## Usage
-
-A few examples of useful commands and/or tasks.
-
-```
-# Start application
-$ npm run dev
-```
-
 ## Documentation
 
 * [API Routes](./docs/ROUTES.md)
