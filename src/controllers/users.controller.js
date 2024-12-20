@@ -67,14 +67,14 @@ const findUser = async (req, res) => {
     try{
 
         /* Extract the request paramaters */
-        const { id }  = parseInt(req.params.id);
-
+        const id  = parseInt(req.params.id);
+        
         /* Perform validation */
         validator(id).isDefined().isNumber();
 
         /* Call the appropriate service and get the user details */
         const result = await service.findById(id);
-
+        
         /* Check the service worked and we have records to send back */
         if(!result){
             logger.log('error', 'Users controller: Problem retrieving specified user');
@@ -107,6 +107,7 @@ const findUser = async (req, res) => {
         }
 
     } catch(error) {
+        
         logger.log('error', 'Users controller: ' + error.message);
         return res.status(500).json({
             "status": 500,
@@ -128,12 +129,13 @@ const updateUser = async (req, res) => {
     try{
 
         /* Extract the request parameters */
-        const { id } = parseInt(req.params.id);
-        const { column, value } = req.body;
+        const id = parseInt(req.params.id);
+        const column = req.body.column;
+        const value = req.body.value;
 
         /* Perform validation */
         validator(id).isDefined().isNumber();
-        validator(column).isDefined().isString().minLen();
+        validator(column).isDefined().isString().minLen(3);
         validator(value).isDefined();
 
         /* Call the appropriate service */
@@ -179,7 +181,7 @@ const removeUser = async (req, res) => {
     try{
 
         /* Extract the request parameters */
-        const { id } = parseInt(req.params.id);
+        const id = parseInt(req.params.id);
 
         /* Perform validation */
         validator(id).isDefined().isNumber();

@@ -40,7 +40,7 @@ const refreshToken = async (req, res) => {
         };
 
         /* Refresh token is OK, so lets generate new tokens */
-        const { accessToken } = security.generateTokens({
+        const { accessToken } = await security.generateTokens({
             id: token?.id,
             username: token?.username,
             display_name: token?.display_name
@@ -52,7 +52,7 @@ const refreshToken = async (req, res) => {
         } else {
             logger.log('error', 'Refresh Token controller: Unable to generate a new access token');
             return res.status(500).json({
-                "status": 400,
+                "status": 500,
                 "state": "fail",
                 "message": "Unable to generate new access token",
                 "data": []
