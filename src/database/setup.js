@@ -5,8 +5,8 @@ const db = require('./db');
 const measurements = `
     CREATE TABLE IF NOT EXISTS measurements(
         id SERIAL PRIMARY KEY,
-        device_id INT NOT NULL,
-        component_id INT NOT NULL,
+        device_id INT REFRENCES devices(id),
+        component_id INT REFRENCES components(id),
         value VARCHAR(20) NOT NULL,
         logged TIMESTAMP NOT NULL, 
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -20,7 +20,7 @@ const devices = `
         mac_address VARCHAR(255) NOT NULL,
         name VARCHAR(255) NOT NULL,
         description TEXT,
-        owner INT NOT NULL,
+        owner INT REFERENCES users(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
     );
@@ -31,8 +31,8 @@ const components = `
         id SERIAL PRIMARY KEY,
         name VARCHAR(255) NOT NULL,
         description TEXT,
-        owner INT NOT NULL,
-        device_id INT NOT NULL,
+        owner INT REFERENCES users(id),
+        device_id INT REFRENCES devices(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
     );
@@ -55,8 +55,8 @@ const users = `
 const keys = `
     CREATE TABLE IF NOT EXISTS keys(
         id SERIAL PRIMARY KEY,
-        owner INT NOT NULL,
-        device_id INT NOT NULL,
+        owner INT REFERENCES users(id),
+        device_id INT REFERENCES devices(id),
         key VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
@@ -66,7 +66,7 @@ const keys = `
 const tokens = `
     CREATE TABLE IF NOT EXISTS tokens(
         id SERIAL PRIMARY KEY,
-        owner INT NOT NULL,
+        owner INT REFERENCES users(id),
         token VARCHAR(255) NOT NULL,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
