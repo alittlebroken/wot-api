@@ -73,6 +73,38 @@ const tokens = `
     );
 `;
 
+/* Clear out the tables */
+const truncatetables = async () => {
+
+    try{
+
+        let result = await db.query("TRUNCATE TABLE measurements;");
+        console.log("Measurements table truncated");
+
+        result = await db.query("TRUNCATE TABLE components;");
+        console.log("Components table truncated");
+
+        result = await db.query("TRUNCATE TABLE keys;");
+        console.log("API Keys table truncated");
+
+        result = await db.query("TRUNCATE TABLE devices;");
+        console.log("Devices table truncated");
+
+        result = await db.query("TRUNCATE TABLE tokens;");
+        console.log("Refresh tokens table truncated");
+
+        result = await db.query("TRUNCATE TABLE users;");
+        console.log("Users table truncated");
+
+        return true;
+
+    } catch(err) {
+        console.log(err);
+        return false;
+    }
+
+};
+
 /* Drop the existing tables */
 const dropTables = async () => {
 
@@ -148,9 +180,12 @@ const createTables = async () => {
 /* Execute the DDL */
 (async () => {
 
-    let result = await dropTables();
+    let result = await truncatetables();
     if(!result) return false;
-    
+
+    result = await dropTables();
+    if(!result) return false;
+
     result = await createTables();
     if(!result) return false;
 
