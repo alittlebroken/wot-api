@@ -78,16 +78,16 @@ const truncatetables = async () => {
 
     try{
 
-        let result = await db.query("TRUNCATE TABLE measurements;");
+        let result = await db.query("TRUNCATE measurements;");
         console.log("Measurements table truncated");
 
-        result = await db.query("TRUNCATE TABLE components;");
+        result = await db.query("TRUNCATE components;");
         console.log("Components table truncated");
 
-        result = await db.query("TRUNCATE TABLE keys;");
+        result = await db.query("TRUNCATE EXISTS keys;");
         console.log("API Keys table truncated");
 
-        result = await db.query("TRUNCATE TABLE devices;");
+        result = await db.query("TRUNCATE TABLE  devices;");
         console.log("Devices table truncated");
 
         result = await db.query("TRUNCATE TABLE tokens;");
