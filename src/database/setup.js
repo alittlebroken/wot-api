@@ -73,6 +73,43 @@ const tokens = `
     );
 `;
 
+/* Drop the existing tables */
+const dropTables = async () => {
+
+    console.log("Dropping tables");
+
+    try{
+
+        let result = await db.query("DROP TABLE IF EXISTS measurements;")
+        console.log("Meausurements table dropped");
+
+        result = await db.query("DROP TABLE IF EXISTS components;");
+        console.log("Components table dropped");
+
+        result = await db.query("DROP TABLE IF EXISTS keys;");
+        console.log("API Key table dropped");
+
+        result = await db.query("DROP TABLE IF EXISTS devices;");
+        console.log("Devices table dropped");
+
+        result = await db.query("DROP TABLE IF EXISTS tokens;");
+        console.log("Refresh Token table dropped");
+
+        result = await db.query("DROP TABLE IF EXISTS users;");
+        console.log("Users table dropped");
+
+        return true;
+
+    } catch(err) {
+
+        console.log(err);
+        return false;
+
+    }
+
+    
+
+};
 
 /* Setup the Tables */
 const createTables = async () => {
@@ -111,7 +148,10 @@ const createTables = async () => {
 /* Execute the DDL */
 (async () => {
 
-    let result = await createTables();
+    let result = await dropTables();
+    if(!result) return false;
+    
+    result = await createTables();
     if(!result) return false;
 
 })();
