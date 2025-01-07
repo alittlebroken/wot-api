@@ -6,7 +6,7 @@ const measurements = `
     CREATE TABLE IF NOT EXISTS measurements(
         id SERIAL PRIMARY KEY,
         device_id INT REFRENCES devices(id),
-        component_id INT REFRENCES components(id),
+        component_id INT REFERENCES components(id),
         value VARCHAR(20) NOT NULL,
         logged TIMESTAMP NOT NULL, 
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
