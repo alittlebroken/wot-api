@@ -5,7 +5,7 @@ const db = require('./db');
 const measurements = `
     CREATE TABLE IF NOT EXISTS measurements(
         id SERIAL PRIMARY KEY,
-        device_id INT REFRENCES devices(id),
+        device_id INT REFERENCES devices(id),
         component_id INT REFERENCES components(id),
         value VARCHAR(20) NOT NULL,
         logged TIMESTAMP NOT NULL, 
@@ -32,7 +32,7 @@ const components = `
         name VARCHAR(255) NOT NULL,
         description TEXT,
         owner INT REFERENCES users(id),
-        device_id INT REFRENCES devices(id),
+        device_id INT REFERENCES devices(id),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         edited_at TIMESTAMP
     );
@@ -112,7 +112,7 @@ const truncatetables = async () => {
 
         exists = await findTable("components");
         if(exists){
-            result = await db.query("TRUNCATE components;");
+            result = await db.query("TRUNCATE components CASCADE;");
             console.log("Components table truncated");
         }
 
@@ -136,7 +136,7 @@ const truncatetables = async () => {
 
         exists = await findTable("devices");
         if(exists){
-            result = await db.query("TRUNCATE devices;");
+            result = await db.query("TRUNCATE devices CASCADE;");
             console.log("Devices table truncated");
         }
 
