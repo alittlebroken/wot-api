@@ -73,28 +73,72 @@ const tokens = `
     );
 `;
 
+/* Does table exists */
+const findTable = async (tableName) => {
+
+    try {
+
+        if(tableName === null || tableName === undefined || tableName === "" || tableName.length < 4){
+            console.log("You must supply the name of a table to check for existance");
+            return false;
+        }
+
+        let result = await db.query(`SELECT FROM information_schema.tables WHERE table_name = '${tableName}';`);
+
+        if(result.rowCount > 0){
+            return true;
+        } else {
+            return false;
+        }
+
+    } catch (err) {
+        console.log(err);
+        return false;
+    }
+
+};
+
 /* Clear out the tables */
 const truncatetables = async () => {
 
     try{
+        let exists, result;
 
-        let result = await db.query("TRUNCATE measurements;");
-        console.log("Measurements table truncated");
+        exists = await findTable("measurements");
+        if(exists){
+            result = await db.query("TRUNCATE measurements;");
+            console.log("Measurements table truncated");
+        }
 
-        result = await db.query("TRUNCATE components;");
-        console.log("Components table truncated");
+        exists = await findTable("components");
+        if(exists){
+            result = await db.query("TRUNCATE components;");
+            console.log("Components table truncated");
+        }
 
-        result = await db.query("TRUNCATE EXISTS keys;");
-        console.log("API Keys table truncated");
+        exists = await findTable("keys");
+        if(exists){
+            result = await db.query("TRUNCATE keys;");
+            console.log("API Keys table truncated");
+        }
 
-        result = await db.query("TRUNCATE TABLE  devices;");
-        console.log("Devices table truncated");
+        exists = await findTable("tokens");
+        if(exists){
+            result = await db.query("TRUNCATE tokens;");
+            console.log("Refresh Tokens table truncated");
+        }
 
-        result = await db.query("TRUNCATE TABLE tokens;");
-        console.log("Refresh tokens table truncated");
+        exists = await findTable("users");
+        if(exists){
+            result = await db.query("TRUNCATE users CASCADE;");
+            console.log("Users table truncated");
+        }
 
-        result = await db.query("TRUNCATE TABLE users;");
-        console.log("Users table truncated");
+        exists = await findTable("devices");
+        if(exists){
+            result = await db.query("TRUNCATE devices;");
+            console.log("Devices table truncated");
+        }
 
         return true;
 
