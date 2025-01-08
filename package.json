@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest --watchAll",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "setupdb": "nodemon src/database/setup.js"
   },
   "author": "",
   "license": "ISC",
